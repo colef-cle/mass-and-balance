@@ -30,10 +30,12 @@ public class Aircraft {
 
 	private Float						maximumZeroFuelWeight;
 
-	@OneToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+	private String						imageUrl;
+
+	@OneToMany( fetch = FetchType.LAZY, cascade = CascadeType.ALL )
 	private List<MassAndBalanceLine>	limits;
 
-	@OneToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+	@OneToMany( fetch = FetchType.LAZY, cascade = CascadeType.ALL )
 	private List<WeightStation>			weightStations;
 
 }

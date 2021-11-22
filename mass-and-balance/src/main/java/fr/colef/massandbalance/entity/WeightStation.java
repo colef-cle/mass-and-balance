@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import lombok.Data;
+import lombok.Getter;
 
 @Entity
 @Data
@@ -15,8 +16,13 @@ public class WeightStation {
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
 	private Long	id;
 
+	@Getter
 	private String	name;
 
-	private float	weightArm;
+	private Float	arm;
+
+	private Float	maxWeight;
+
+	private Float	defaultWeight;
 
 }

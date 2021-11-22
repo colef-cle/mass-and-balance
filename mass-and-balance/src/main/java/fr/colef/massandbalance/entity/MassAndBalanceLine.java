@@ -15,12 +15,12 @@ public class MassAndBalanceLine {
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
 	private Long	id;
 
-	private Float	minWeight;
+	private Float	p1Weight;
 
-	private Float	minArm;
+	private Float	p1Arm;
 
-	private Float	maxWeight;
+	private Float	p2Weight;
 
-	private Float	maxArm;
+	private Float	p2Arm;
 
 }
