@@ -19,125 +19,282 @@
 	
 </head>
 <body>
+
+	<section class="hero is-small is-primary">
+	  <div class="hero-body">
+	    <p class="title is-clickable" onclick="window.location.href = window.location.origin+'/home'">Mass and balance</p>
+	    <p class="subtitle">
+	      by Colin LEFEBVRE - cle@colef.fr
+	    </p>
+	  </div>
+	</section>
+
 	<section class="section">
     <div class="container">
       
-     
-	      	
-      	
-      
       <div class="columns">
-      	<div class="column is-narrow box">
-      		
-      		<p class="subtitle has-text-centered">AIRCRAFT LISTS</p>
-      		
-      		<a id="add_aircraft_btn" class="button is-primary mb-4">
-		      	<span class="icon">
-		      		<i class="fas fa-plus"></i>
-		      	</span>
-		      	<span>Add an aircraft</span>
-		      </a>
-      	
-	      	<aside class="menu">
-					  <ul class="menu-list" id="aircraft_list">
-					    <li th:each="act : ${aircrafts}">
-					    	<a th:text="${act?.registrationMark}" th:href="@{/admin(actId=${act.id})}"
-					    		th:classappend="${act.id == aircraft?.id} ? 'is-active'"/>
-					    </li>
-					  </ul>
-					</aside>
+      	<div class="column is-narrow">
+      		<div class="box">
+	      		<p class="subtitle has-text-centered">AIRCRAFT LIST</p>
+	      		
+	      		<a id="add_aircraft_btn" class="button is-primary mb-4">
+			      	<span class="icon">
+			      		<i class="fas fa-plus"></i>
+			      	</span>
+			      	<span>Add an aircraft</span>
+			      </a>
+	      	
+		      	<aside class="menu">
+						  <ul class="menu-list" id="aircraft_list">
+						    <li th:each="act : ${aircrafts}">
+						    	<a th:text="${act?.registrationMark}" th:href="@{/admin(actId=${act.id})}"
+						    		th:classappend="${act.id == aircraft?.id} ? 'is-active'"/>
+						    </li>
+						  </ul>
+						</aside>
+					</div>
       	</div>
       	
       	<div class="column">
       	
-      	
-      		<div class="has-text-centered">
-	      		<figure class="image " style="margin:auto;width: 24rem; height: 18rem;">
-	      			<img alt="photo" th:src="${aircraft?.imageUrl}">
-	      		</figure>
-      		</div>
-      		
-      	
-      		<div th:data-act-id="${aircraft?.id}" th:if="${aircraft}" id="aircraft_container">
-	      		<div class="field is-horizontal">
-						  <div class="field-label is-normal is-flex-grow-3">
-						    <label class="label">Aircraft registration : </label>
-						  </div>
-						  <div class="field-body">
-						    <div class="field is-narrow">
-						      <div class="control">
-						        <input class="input act-field" type="text" id="act_registration_mark"
-						        				th:value="${aircraft.registrationMark}"/>
-						      </div>
-						    </div>
-						  </div>
-						</div>
-						<div class="field is-horizontal">
-						  <div class="field-label is-normal is-flex-grow-3">
-						    <label class="label">Empty weight - kg : </label>
-						  </div>
-						  <div class="field-body">
-						    <div class="field is-narrow">
-						      <div class="control">
-						        <input class="input act-field" type="text" id="act_empty_weight"
-						        				th:value="${aircraft.emptyWeight}"/>
-						      </div>
-						    </div>
-						  </div>
-						</div>
-						<div class="field is-horizontal">
-						  <div class="field-label is-normal is-flex-grow-3">
-						    <label class="label">Maximum take off weight (MTOW) - kg : </label>
-						  </div>
-						  <div class="field-body">
-						    <div class="field is-narrow">
-						      <div class="control">
-						        <input class="input act-field" type="text" id="act_maximum_take_off_weight"
-						       									th:value="${aircraft.maximumTakeOffWeight}"/>
-						      </div>
-						    </div>
-						  </div>
-						</div>
-						<div class="field is-horizontal">
-						  <div class="field-label is-normal is-flex-grow-3">
-						    <label class="label">Maximum landing weight (MLW) - kg : </label>
-						  </div>
-						  <div class="field-body">
-						    <div class="field is-narrow">
-						      <div class="control">
-						        <input class="input act-field" type="text" id="act_maximum_landing_weight"
-						        								th:value="${aircraft.maximumLandingWeight}"/>
-						      </div>
-						    </div>
-						  </div>
-						</div>
-						<div class="field is-horizontal">
-						  <div class="field-label is-normal is-flex-grow-3">
-						    <label class="label">Maximum zero fuel weight (MZFW) - kg : </label>
-						  </div>
-						  <div class="field-body">
-						    <div class="field is-narrow">
-						      <div class="control">
-						        <input class="input act-field" type="text" id="act_maximum_zero_fuel_weight"
-						        								th:value="${aircraft.maximumZeroFuelWeight}"/>
-						      </div>
-						    </div>
-						  </div>
-						</div>
-						<div class="field is-horizontal">
-						  <div class="field-label is-normal is-flex-grow-3">
-						    <label class="label">Image URL : </label>
-						  </div>
-						  <div class="field-body">
-						    <div class="field is-expanded">
-						      <div class="control">
-						        <input class="input act-field" type="text" id="act_image_url"
-						        								th:value="${aircraft.imageUrl}"/>
-						      </div>
-						    </div>
-						  </div>
-						</div>
-      		</div>
+	      		<div th:data-act-id="${aircraft?.id}" th:if="${aircraft}" id="aircraft_container" class="box">
+	      		
+		      		<div class="has-text-centered" th:if="${aircraft?.imageUrl}">
+			      		<figure class="image " style="margin:auto;width: 24rem; height: 18rem;">
+			      			<img alt="photo" th:src="${aircraft?.imageUrl}">
+			      		</figure>
+		      		</div>
+	      		
+	      		
+		      		<div class="field is-horizontal">
+							  <div class="field-label is-normal is-flex-grow-3">
+							    <label class="label">Aircraft registration : </label>
+							  </div>
+							  <div class="field-body">
+							    <div class="field is-narrow">
+							      <div class="control">
+							        <input class="input act-field" type="text" id="act_registration_mark"
+							        				th:value="${aircraft.registrationMark}"/>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<div class="field is-horizontal">
+							  <div class="field-label is-normal is-flex-grow-3">
+							    <label class="label">Empty weight - kg : </label>
+							  </div>
+							  <div class="field-body">
+							    <div class="field is-narrow">
+							      <div class="control">
+							        <input class="input act-field" type="text" id="act_empty_weight"
+							        				th:value="${aircraft.emptyWeight}"/>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<div class="field is-horizontal">
+							  <div class="field-label is-normal is-flex-grow-3">
+							    <label class="label">Maximum take off weight (MTOW) - kg : </label>
+							  </div>
+							  <div class="field-body">
+							    <div class="field is-narrow">
+							      <div class="control">
+							        <input class="input act-field" type="text" id="act_maximum_take_off_weight"
+							       									th:value="${aircraft.maximumTakeOffWeight}"/>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<div class="field is-horizontal">
+							  <div class="field-label is-normal is-flex-grow-3">
+							    <label class="label">Maximum landing weight (MLW) - kg : </label>
+							  </div>
+							  <div class="field-body">
+							    <div class="field is-narrow">
+							      <div class="control">
+							        <input class="input act-field" type="text" id="act_maximum_landing_weight"
+							        								th:value="${aircraft.maximumLandingWeight}"/>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<div class="field is-horizontal">
+							  <div class="field-label is-normal is-flex-grow-3">
+							    <label class="label">Maximum zero fuel weight (MZFW) - kg : </label>
+							  </div>
+							  <div class="field-body">
+							    <div class="field is-narrow">
+							      <div class="control">
+							        <input class="input act-field" type="text" id="act_maximum_zero_fuel_weight"
+							        								th:value="${aircraft.maximumZeroFuelWeight}"/>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<div class="field is-horizontal">
+							  <div class="field-label is-normal is-flex-grow-3">
+							    <label class="label">Default fuel density (kg/l) : </label>
+							  </div>
+							  <div class="field-body">
+							    <div class="field is-narrow">
+							      <div class="control">
+							        <input class="input act-field" type="text" id="act_default_fuel_density"
+							        								th:value="${aircraft.defaultFuelDensity}"/>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<div class="field is-horizontal">
+							  <div class="field-label is-normal is-flex-grow-3">
+							    <label class="label">Image URL : </label>
+							  </div>
+							  <div class="field-body">
+							    <div class="field is-expanded">
+							      <div class="control">
+							        <input class="input act-field" type="text" id="act_image_url"
+							        								th:value="${aircraft.imageUrl}"/>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							
+							
+							
+							<div class="columns mt-4">
+								<div class="column is-7">
+									
+									<table class="table is-fullwidth is-narrow is-bordered" id="ws_table">
+										<thead>
+											<tr>
+												<th  colspan="7">
+													<div class="is-flex is-justify-content-space-between">
+														<span class="subtitle m-0">WEIGHT STATIONS</span>
+														<a class="button is-primary is-small" id="add_weight_station_btn"
+																title="Add a weight station">
+															<i class="fas fa-plus"></i>
+														</a>
+													</div>
+												</th>
+											</tr>
+											<tr class="is-size-7 has-text-centered"> 
+												<th>
+													Station name	
+												</th>
+												<th>
+													Station arm	
+												</th>
+												<th>
+													Max. weight (kg)	
+												</th>
+												<th>
+													Def. weight (kg)	
+												</th>
+												<th class="is-narrow">
+													Fuel	
+												</th>
+												<th class="is-narrow">
+													Edit
+												</th>
+												<th class="is-narrow"/>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="ws : ${aircraft.weightStations}" th:data-ws-id="${ws.id}">
+												<td class="p-0">
+													<input type="text" class="input is-small ws-field ws-name" th:value="${ws.name}" style="border-width: 0px;">
+												</td>
+												<td class="p-0">
+													<input type="text" class="input is-small ws-field ws-arm" th:value="${ws.arm}" style="border-width: 0px;">
+												</td>
+												<td class="p-0">
+													<input type="text" class="input is-small ws-field ws-max-weight" th:value="${ws.maxWeight}" style="border-width: 0px;">
+												</td>
+												<td class="p-0">
+													<input type="text" class="input is-small ws-field ws-default-weight" th:value="${ws.defaultWeight}" style="border-width: 0px;">
+												</td>
+												<td class="p-0 has-text-centered">
+													<label class="checkbox">
+														<input type="checkbox" class="is-small ws-field ws-is-fuel" th:checked="${ws.isFuel}" >
+													</label>
+												</td>
+												<td class="p-0 has-text-centered">
+													<label class="checkbox">
+														<input type="checkbox" class="is-small ws-field ws-is-editable" th:checked="${ws.isEditable}">
+													</label>
+												</td>
+												<td class="p-0">
+													<a class="button is-small is-danger px-1 ws-delete">
+														<i class="fas fa-trash fa-lg"></i>
+													</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									
+								</div>
+								
+								
+								<div class="column">
+									<table class="table is-fullwidth is-narrow is-bordered" id="mab_line_table">
+										<thead>
+											<tr>
+												<th  colspan="5">
+													<div class="is-flex is-justify-content-space-between">
+														<span class="subtitle m-0">MASS AND BALANCE LINES</span>
+														<a class="button is-primary is-small" id="add_mass_and_balance_line_btn"
+																title="Add a line">
+															<i class="fas fa-plus"></i>
+														</a>
+													</div>
+												</th>
+											</tr>
+											<tr class="is-size-7 has-text-centered"> 
+												<th class="p-0">
+													P1 arm	
+												</th>
+												<th class="p-0">
+													P1 weight	
+												</th>
+												<th class="p-0">
+													P2 arm	
+												</th>
+												<th class="p-0">
+													P2 weight	
+												</th>
+												<th class="is-narrow"/>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="mab : ${aircraft.massAndBalanceLines}" th:data-mab-id="${mab.id}">
+												<td class="p-0">
+													<input type="text" class="input is-small mab-field mab-p1-arm" th:value="${mab.p1Arm}" style="border-width: 0px;">
+												</td>
+												<td class="p-0">
+													<input type="text" class="input is-small mab-field mab-p1-weight" th:value="${mab.p1Weight}" style="border-width: 0px;">
+												</td>
+												<td class="p-0">
+													<input type="text" class="input is-small mab-field mab-p2-arm" th:value="${mab.p2Arm}" style="border-width: 0px;">
+												</td>
+												<td class="p-0">
+													<input type="text" class="input is-small mab-field mab-p2-weight" th:value="${mab.p2Weight}" style="border-width: 0px;">
+												</td>
+												<td class="p-0">
+													<a class="button is-small is-danger px-1 mab-delete">
+														<i class="fas fa-trash fa-lg"></i>
+													</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							
+							
+	      		</div>
+					
+					
+					
+					
 					
       	</div>
       </div>

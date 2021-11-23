@@ -1,30 +1,188 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Mass And Balance - ADMIN</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
-	<!-- BULMA -->
-	<link rel="stylesheet" th:href="@{/lib/bulma.css}">
-	
-	<!-- FONT AWESOME -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.css" />
-	
-	<!-- JQUERY -->
-	<script th:src="@{/lib/jquery-3.6.0.min.js}"></script>
-	
+<title>Mass And Balance - ADMIN</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- BULMA -->
+<link rel="stylesheet" th:href="@{/lib/bulma.css}">
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.css" />
+
+<!-- JQUERY -->
+<script th:src="@{/lib/jquery-3.6.0.min.js}"></script>
+
+<!-- JQUERY -->
+<script th:src="@{/js/mab.js}"></script>
+
+<style type="text/css">
+@media print
+{    
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}
+</style>
+
 </head>
-<body>
-	<section class="section">
-    <div class="container">
-      
-      <div>
-	      
-      </div>
-      
-    </div>
-  </section>
+<body th:with="act = ${aircraft}">
+
+	<section class="hero is-small is-primary no-print">
+		<div class="hero-body">
+			<p class="title is-clickable"
+				onclick="window.location.href = window.location.origin+'/home'">Mass and
+				balance</p>
+			<p class="subtitle">by Colin LEFEBVRE - cle@colef.fr</p>
+		</div>
+	</section>
+
+	<section class="section p-5">
+		<div class="container box">
+			
+			<p class="title has-text-centered mt-3 mb-6">DEVIS MASSE ET CENTRAGE</p>
+			
+			<div class="columns is-vcentered">
+				<div class="column has-text-centered">
+					<img th:if="${act.imageUrl}" th:src="${act.imageUrl}"
+										alt="image" width="200px">
+					<div th:unless="${act.imageUrl}" width="200px"></div>			
+				</div>
+				<div class="column ">
+						<p class="title is-1 my-5" th:text="${act.registrationMark}"/>
+				</div>
+			</div>
+			
+			<div class="is-flex is-flex-wrap-wrap" style="row-gap: 2rem;">
+			
+				<div class="is-flex-grow-0">
+					<p class="subtitle mb-2 has-text-centered">
+						<span class="mr-6">TABLEAU DES MASSES</span>
+						
+						<span class="is-size-7 ml-6"> 
+								Densité de carburant utilisée : 
+								<input class="input is-small p-0 fuel-d mab-field is-primary" 
+													type="number" th:value="${act.defaultFuelDensity}" 
+													id="fuel_density" style="width: 3rem;">
+								kg/l					
+						</span>
+					
+					</p>
+					
+					<table class="table is-striped is-narrow" style="margin: auto;">
+						<thead>
+							<tr>
+								<th class="is-narrow"></th>
+								<th class="is-narrow">Levier</th>
+								<th class="is-narrow">Moment</th>
+								<th class="is-narrow">Masse Max</th>
+								<th class="is-narrow">Masse kg</th>
+								<th class="is-narrow">Carb. Litres</th>
+								<th class="is-narrow">Carb. US Gal</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="ws : ${act.weightStations}" class="input-row">
+								<td th:text="${ws.name}"/>
+								<td th:text="${ws.arm}" class="mab-arm"/>
+								<td class="mab-moment has-text-grey-light"/>
+								<td th:text="${ws.maxWeight}" class="mab-max-weight"/>
+								<td>
+									<input type="number" class="input is-small mab-weight mab-field" 
+											th:readOnly="! ${ws.isEditable}" th:value="${ws.defaultWeight}"
+											th:classappend="|${ws.isFuel != null && ws.isFuel ? 'fuel-kg':''} 
+																			${ws.isEditable != null && ws.isEditable ? 'is-primary':''}|">
+								</td>
+								<td>
+									<input th:if="${ws.isFuel}" type="number" class="input is-small fuel-l mab-field is-primary">
+								</td>
+								<td>
+									<input th:if="${ws.isFuel}" type="number" class="input is-small fuel-usg mab-field is-primary">
+								</td>
+								
+							</tr>
+							<tr class="result-row has-background-primary-light" style="border-top-style: double;">
+								<td class="has-text-weight-bold">RESULT</td>
+								<td class="has-text-weight-bold mab-arm"/>
+								<td class="mab-moment has-text-grey-light"/>
+								<td th:text="${act.maximumTakeOffWeight}"/>
+								<td class="has-text-weight-bold mab-weight"/>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			
+				<div class="is-flex-grow-5">
+					<p class="subtitle mb-2 has-text-centered">LIMITATIONS</p>
+					<table style="margin: auto;">
+						<tr>
+							<td class="px-1">
+								Temps de vol estimé :
+							</td>
+							<td class="px-1">
+									<input id="flight_time" class="input is-small py-0 is-primary mab-field" type="number" value="60"  style="width: 4rem;">
+							</td>
+							<td class="px-1">
+								min
+							</td>
+						</tr>
+						
+						<tr>
+							<td class="px-1">
+								Masse max au décollage :
+							</td>
+							<td class="px-1" th:text="${act.maximumTakeOffWeight}" id="mtow">
+								
+							</td>
+							<td class="px-1">
+								kg
+							</td>
+						</tr>
+						<tr>
+							<td class="px-1">
+								Masse max à l'atterrissage :
+							</td>
+							<td class="px-1" th:text="${act.maximumLandingWeight}" id="mlw">
+								
+							</td>
+							<td class="px-1">
+								kg
+							</td>
+						</tr>
+						<tr>
+							<td class="px-1">
+								Masse max sans carburant :
+							</td>
+							<td class="px-1" th:text="${act.maximumZeroFuelWeight}" id="mzfw">
+								
+							</td>
+							<td class="px-1">
+								kg
+							</td>
+						</tr>
+					</table>
+					
+					<div class="has-text-centered p-4">
+						<div th:each="line : ${act.massAndBalanceLines}" class="is-hidden mab-line">
+							<input type="hidden" class="p1-arm" th:value="${line.p1Arm}">
+							<input type="hidden" class="p1-weight" th:value="${line.p1Weight}">
+							<input type="hidden" class="p2-arm" th:value="${line.p2Arm}">
+							<input type="hidden" class="p2-weight" th:value="${line.p2Weight}">
+						</div>
+						<canvas id="mab_canvas" style="border: solid 2px lightgray ;width: 350px;height: 200px;"></canvas>
+					</div>
+					
+				</div>
+			
+			</div>
+
+		</div>
+	</section>
 
 </body>
 </html>

@@ -4,19 +4,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Data;
-import lombok.Getter;
 
 @Entity
 @Data
+@Table
 public class WeightStation {
 
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
 	private Long	id;
 
-	@Getter
 	private String	name;
 
 	private Float	arm;
@@ -24,5 +24,9 @@ public class WeightStation {
 	private Float	maxWeight;
 
 	private Float	defaultWeight;
+
+	private Boolean	isFuel;
+
+	private Boolean	isEditable	= true;
 
 }

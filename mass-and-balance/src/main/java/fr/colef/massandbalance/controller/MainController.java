@@ -18,12 +18,17 @@ public class MainController {
 	private AircraftService aircraftService;
 
 	@GetMapping( "/home" )
-	private String getMainPage() {
+	private String getMainPage( Model model ) {
+
+		model.addAttribute( "aircrafts", aircraftService.getAllAircrafts() );
 		return "main";
 	}
 
 	@GetMapping( "/mab/{id}" )
-	private String getMabPage( @PathVariable( "id" ) Long aircraftId ) {
+	private String getMabPage( @PathVariable( "id" ) Long aircraftId, Model model ) {
+		if ( aircraftId != null ) {
+			model.addAttribute( "aircraft", aircraftService.getAircraftById( aircraftId ) );
+		}
 		return "mab";
 	}
 
@@ -32,7 +37,6 @@ public class MainController {
 		model.addAttribute( "aircrafts", aircraftService.getAllAircrafts() );
 
 		if ( aircraftId != null ) {
-			log.info( "The aircraft id for admin is not null" );
 			model.addAttribute( "aircraft", aircraftService.getAircraftById( aircraftId ) );
 		}
 
