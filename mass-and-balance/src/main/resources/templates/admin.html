@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" translate="no">
 <head>
 	<title>Mass And Balance - ADMIN</title>
 	<meta charset="UTF-8">
@@ -19,7 +19,6 @@
 	
 </head>
 <body>
-
 	<section class="hero is-small is-primary">
 	  <div class="hero-body">
 	    <p class="title is-clickable" onclick="window.location.href = window.location.origin+'/home'">Mass and balance</p>
@@ -31,7 +30,6 @@
 
 	<section class="section">
     <div class="container">
-      
       <div class="columns">
       	<div class="column is-narrow">
       		<div class="box">
@@ -58,14 +56,6 @@
       	<div class="column">
       	
 	      		<div th:data-act-id="${aircraft?.id}" th:if="${aircraft}" id="aircraft_container" class="box">
-	      		
-		      		<div class="has-text-centered" th:if="${aircraft?.imageUrl}">
-			      		<figure class="image " style="margin:auto;width: 24rem; height: 18rem;">
-			      			<img alt="photo" th:src="${aircraft?.imageUrl}">
-			      		</figure>
-		      		</div>
-	      		
-	      		
 		      		<div class="field is-horizontal">
 							  <div class="field-label is-normal is-flex-grow-3">
 							    <label class="label">Aircraft registration : </label>
@@ -127,6 +117,25 @@
 							      <div class="control">
 							        <input class="input act-field" type="text" id="act_maximum_zero_fuel_weight"
 							        								th:value="${aircraft.maximumZeroFuelWeight}"/>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<div class="field is-horizontal">
+							  <div class="field-label is-normal is-flex-grow-3">
+							    <label class="label">Fuel flow (l/h) : </label>
+							  </div>
+							  <div class="field-body">
+							    <div class="field is-narrow">
+							      <div class="control">
+							        <input class="input act-field" type="text" id="act_fuel_flow"
+							        								th:value="${aircraft.fuelFlow}"/>
+							      </div>
+							    </div>
+							    <div class="field is-narrow">
+							    	<div class="control is-flex is-align-items-baseline">
+							        <input class="input act-field" type="text" id="act_fuel_flow_usg"/>
+							         &nbsp;(GPH)
 							      </div>
 							    </div>
 							  </div>

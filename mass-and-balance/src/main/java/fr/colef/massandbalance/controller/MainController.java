@@ -8,14 +8,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import fr.colef.massandbalance.service.AircraftService;
-import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@Slf4j
 public class MainController {
 
 	@Autowired
 	private AircraftService aircraftService;
+
+	@GetMapping( "/" )
+	private String getPage() {
+		return "redirect:/home";
+	}
 
 	@GetMapping( "/home" )
 	private String getMainPage( Model model ) {

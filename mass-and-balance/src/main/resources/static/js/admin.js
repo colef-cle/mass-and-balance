@@ -31,6 +31,17 @@ $(document).ready(function(){
 		deleteMassAndBalanceLine($(this).closest('tr'));
 	});
 	
+	if($('#act_fuel_flow').val()){
+		$('#act_fuel_flow_usg').val( ($('#act_fuel_flow').val() / 3.78541).toFixed(1) )
+	}
+	
+	$('#act_fuel_flow_usg').on('input', function(){
+		$('#act_fuel_flow').val( ($('#act_fuel_flow_usg').val() * 3.78541).toFixed(1) )
+	})
+	
+	$('#act_fuel_flow').on('input', function(){
+		$('#act_fuel_flow_usg').val( ($('#act_fuel_flow').val() / 3.78541).toFixed(1) )
+	})
 	
 });
 
@@ -209,6 +220,7 @@ function updateAircraft(){
 	act['maximumTakeOffWeight'] = $('#act_maximum_take_off_weight').val()
 	act['maximumLandingWeight'] = $('#act_maximum_landing_weight').val()
 	act['maximumZeroFuelWeight'] = $('#act_maximum_zero_fuel_weight').val()
+	act['fuelFlow'] = $('#act_fuel_flow').val()
 	act['defaultFuelDensity'] = $('#act_default_fuel_density').val()
 	act['imageUrl'] = $('#act_image_url').val()
 	$.ajax({

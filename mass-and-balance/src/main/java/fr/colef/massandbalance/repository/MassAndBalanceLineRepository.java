@@ -1,4 +1,4 @@
-package fr.colef.massandbalance.service;
+package fr.colef.massandbalance.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

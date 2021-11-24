@@ -14,6 +14,7 @@ import fr.colef.massandbalance.entity.Aircraft;
 import fr.colef.massandbalance.entity.MassAndBalanceLine;
 import fr.colef.massandbalance.entity.WeightStation;
 import fr.colef.massandbalance.repository.AircraftRepository;
+import fr.colef.massandbalance.repository.MassAndBalanceLineRepository;
 import fr.colef.massandbalance.repository.WeightStationRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,13 +36,13 @@ public class AircraftService {
 		Aircraft act = aircraftRepository.getById( id );
 
 		List<MassAndBalanceLine> mabs = act.getMassAndBalanceLines().stream()
-		        .sorted( Comparator.comparingLong( MassAndBalanceLine::getId ) )
-		        .collect( Collectors.toList() );
+		                                   .sorted( Comparator.comparingLong( MassAndBalanceLine::getId ) )
+		                                   .collect( Collectors.toList() );
 		act.setMassAndBalanceLines( mabs );
 
 		List<WeightStation> wss = act.getWeightStations().stream()
-		        .sorted( Comparator.comparingLong( WeightStation::getId ) )
-		        .collect( Collectors.toList() );
+		                             .sorted( Comparator.comparingLong( WeightStation::getId ) )
+		                             .collect( Collectors.toList() );
 		act.setWeightStations( wss );
 		return act;
 	}
@@ -68,7 +69,7 @@ public class AircraftService {
 
 	public WeightStation addNewWeightStation( Long aircraftId ) {
 		WeightStation ws = new WeightStation();
-		ws.setName( "new line" );
+		ws.setName( "new weight station" );
 		weightStationRepository.save( ws );
 		Aircraft act = aircraftRepository.findById( aircraftId ).get();
 		act.getWeightStations().add( ws );

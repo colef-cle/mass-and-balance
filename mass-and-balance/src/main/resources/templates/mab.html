@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" translate="no">
 <head>
 <title>Mass And Balance - ADMIN</title>
 <meta charset="UTF-8">
@@ -15,17 +15,26 @@
 <!-- JQUERY -->
 <script th:src="@{/lib/jquery-3.6.0.min.js}"></script>
 
-<!-- JQUERY -->
+<!-- HTML TO PDF -->
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js}"></script>
+
+<!-- SCRIPT -->
 <script th:src="@{/js/mab.js}"></script>
 
 <style type="text/css">
 @media print
 {    
-    .no-print, .no-print *
-    {
-        display: none !important;
-    }
+  .no-print, .no-print *
+  {
+    display: none !important;
+  }
 }
+@page  
+{ 
+  size: auto;   /* auto is the initial value */ 
+  margin: 0mm 0mm 0mm 0mm;  
+}
+
 </style>
 
 </head>
@@ -40,10 +49,18 @@
 		</div>
 	</section>
 
-	<section class="section p-5">
-		<div class="container box">
+	<section class="section p-5" id="main_section">
+		<div class="container is-fullhd box">
 			
-			<p class="title has-text-centered mt-3 mb-6">DEVIS MASSE ET CENTRAGE</p>
+			<p class="title has-text-centered mt-3 mb-5">
+				DEVIS MASSE ET CENTRAGE
+				<a class="button no-print ml-6 is-primary is-outlined" id="print_btn" title="Print">
+					<i class="fas fa-print"></i>
+				</a>
+				<a class="button no-print is-primary is-outlined" id="pdf_btn" title="Exporter en pdf">
+					<i class="fas fa-file-pdf"></i>
+				</a>
+			</p>
 			
 			<div class="columns is-vcentered">
 				<div class="column has-text-centered">
@@ -52,15 +69,15 @@
 					<div th:unless="${act.imageUrl}" width="200px"></div>			
 				</div>
 				<div class="column ">
-						<p class="title is-1 my-5" th:text="${act.registrationMark}"/>
+						<p class="title is-1 my-5 has-text-centered" th:text="${act.registrationMark}"/>
 				</div>
 			</div>
 			
-			<div class="is-flex is-flex-wrap-wrap" style="row-gap: 2rem;">
+			<div class="is-flex is-flex-wrap-wrap is-justify-content-space-between" style="row-gap: 2rem;">
 			
-				<div class="is-flex-grow-0">
+				<div class="table-container">
 					<p class="subtitle mb-2 has-text-centered">
-						<span class="mr-6">TABLEAU DES MASSES</span>
+						<span class="mr-6">TABLEAU DE CENTRAGE</span>
 						
 						<span class="is-size-7 ml-6"> 
 								Densité de carburant utilisée : 
@@ -69,23 +86,26 @@
 													id="fuel_density" style="width: 3rem;">
 								kg/l					
 						</span>
-					
 					</p>
 					
 					<table class="table is-striped is-narrow" style="margin: auto;">
-						<thead>
+						<thead class="has-text-centered">
 							<tr>
-								<th class="is-narrow"></th>
-								<th class="is-narrow">Levier</th>
-								<th class="is-narrow">Moment</th>
-								<th class="is-narrow">Masse Max</th>
-								<th class="is-narrow">Masse kg</th>
-								<th class="is-narrow">Carb. Litres</th>
-								<th class="is-narrow">Carb. US Gal</th>
+								<th style="width: 0px;min-width: 5rem;" rowspan="2"></th>
+								<th style="width: 0px;min-width: 5rem;" rowspan="2">Levier</th>
+								<th style="width: 0px;min-width: 5rem;" rowspan="2">Moment</th>
+								<th style="width: 0px;min-width: 5rem;" rowspan="2">Masse Max</th>
+								<th style="width: 0px;min-width: 5rem;" rowspan="2">Masse kg</th>
+								<th style="width: 0px;min-width: 5rem;" colspan="2">Carburant</th>
+								
+							</tr>
+							<tr>
+								<th style="width: 0px;min-width: 5rem;">Litres</th>
+								<th style="width: 0px;min-width: 5rem;">USG</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="ws : ${act.weightStations}" class="input-row">
+							<tr th:each="ws : ${act.weightStations}" class="input-row" th:classappend="${ws.isFuel} ? 'is-fuel'">
 								<td th:text="${ws.name}"/>
 								<td th:text="${ws.arm}" class="mab-arm"/>
 								<td class="mab-moment has-text-grey-light"/>
@@ -104,7 +124,9 @@
 								</td>
 								
 							</tr>
-							<tr class="result-row has-background-primary-light" style="border-top-style: double;">
+						</tbody>
+						<tfoot>
+							<tr class="result-row has-background-primary-light" >
 								<td class="has-text-weight-bold">RESULT</td>
 								<td class="has-text-weight-bold mab-arm"/>
 								<td class="mab-moment has-text-grey-light"/>
@@ -113,59 +135,12 @@
 								<td></td>
 								<td></td>
 							</tr>
-						</tbody>
+						</tfoot>
 					</table>
 				</div>
 			
-				<div class="is-flex-grow-5">
-					<p class="subtitle mb-2 has-text-centered">LIMITATIONS</p>
-					<table style="margin: auto;">
-						<tr>
-							<td class="px-1">
-								Temps de vol estimé :
-							</td>
-							<td class="px-1">
-									<input id="flight_time" class="input is-small py-0 is-primary mab-field" type="number" value="60"  style="width: 4rem;">
-							</td>
-							<td class="px-1">
-								min
-							</td>
-						</tr>
-						
-						<tr>
-							<td class="px-1">
-								Masse max au décollage :
-							</td>
-							<td class="px-1" th:text="${act.maximumTakeOffWeight}" id="mtow">
-								
-							</td>
-							<td class="px-1">
-								kg
-							</td>
-						</tr>
-						<tr>
-							<td class="px-1">
-								Masse max à l'atterrissage :
-							</td>
-							<td class="px-1" th:text="${act.maximumLandingWeight}" id="mlw">
-								
-							</td>
-							<td class="px-1">
-								kg
-							</td>
-						</tr>
-						<tr>
-							<td class="px-1">
-								Masse max sans carburant :
-							</td>
-							<td class="px-1" th:text="${act.maximumZeroFuelWeight}" id="mzfw">
-								
-							</td>
-							<td class="px-1">
-								kg
-							</td>
-						</tr>
-					</table>
+				<div class="table-container">
+					<p class="subtitle mb-2 has-text-centered">DIAGRAMME</p>
 					
 					<div class="has-text-centered p-4">
 						<div th:each="line : ${act.massAndBalanceLines}" class="is-hidden mab-line">
@@ -174,8 +149,55 @@
 							<input type="hidden" class="p2-arm" th:value="${line.p2Arm}">
 							<input type="hidden" class="p2-weight" th:value="${line.p2Weight}">
 						</div>
+						
+						<input id="mtow" type="hidden" th:value="${act.maximumTakeOffWeight}">
+						<input id="mlw" type="hidden"  th:value="${act.maximumLandingWeight}">
+						<input id="mzfw" type="hidden" th:value="${act.maximumZeroFuelWeight}">
+						<input id="fuel_flow" type="hidden" th:value="${act.fuelFlow}">
+						
+						
 						<canvas id="mab_canvas" style="border: solid 2px lightgray ;width: 350px;height: 200px;"></canvas>
 					</div>
+					
+				</div>
+			
+				<div class="table-container">
+					<p class="subtitle mb-2 has-text-centered">LIMITATIONS</p>
+					
+					<table class="table is-narrow is-size-7 mb-4" style="margin: auto;">
+						<tr>
+							<td class="px-1"  style="vertical-align: middle;">
+								Temps de vol estimé :
+							</td>
+							<td class="px-1"  style="vertical-align: middle;">
+									<input id="flight_time" class="input is-small py-0 is-primary mab-field" type="number" value="60"  style="width: 4rem;height: 1.5rem;">
+							</td>
+							<td class="px-1"  style="vertical-align: middle;">
+								min
+							</td>
+						</tr>
+						<tr>
+							<td class="px-1" style="vertical-align: middle;">
+								Consommation horaire :
+							</td>
+							<td class="px-1" th:text="${act.fuelFlow} ? ${act.fuelFlow} + ' lph' : ''" style="vertical-align: middle;"/>
+							<td class="px-1" th:text="${act.fuelFlow} ? '( ' + ${#numbers.formatDecimal(act.fuelFlow / 3.78541, 0, 1)} +' gph )' :'' "  
+										style="vertical-align: middle;white-space: nowrap;"/>
+						</tr>
+						
+					</table>
+					
+					<table class="table is-narrow" style="margin: auto;white-space: nowrap;" id="limit_table">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Valeur</th>
+								<th>Limite</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
 					
 				</div>
 			

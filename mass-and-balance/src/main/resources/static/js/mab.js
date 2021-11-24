@@ -1,24 +1,32 @@
 $(document).ready(function(){
-	
 	$('.mab-field').on('input', function(){
 		refreshMab($(this))
 	});
-	
-	$('.mab-field').each(function(){
+	$('.mab-field').not('.fuel-d').each(function(){
 		if($(this).val()){
 			refreshMab($(this))
 		}
-		
 	});
-	
+	$('#print_btn').click(function(){
+		window.print();
+	});
+	$('#pdf_btn').click(function(){
+		const element = document.getElementById('main_section');
+		// Choose the element and save the PDF for our user.
+		$('.no-print').not('.hero').hide();
+		html2pdf().set({ html2canvas: { scale: 4 } })
+			.from(element)
+			.save('MasseEtCentrage.pdf')
+			.then(function(){
+				$('.no-print').show();
+			}, function(){
+				$('.no-print').show();
+			});
+	});
 });
-
-
 
 function refreshMab(updatedField){
 	const updatedTr = updatedField.closest('tr');
-	
-	
 	//Management of fuel
 	if(updatedField.hasClass('fuel-kg')){
 		const fuelKg = updatedField.val();
@@ -39,14 +47,19 @@ function refreshMab(updatedField){
 		updatedTr.find('.fuel-l').val(fuelL.toFixed(1));
 		updatedTr.find('.fuel-kg').val(fuelKg.toFixed(1));
 	}else if(updatedField.hasClass('fuel-d')){
-		const fuelL = updatedTr.find('.fuel-l').val();
-		const fuelKg = fuelL * updatedField.val();
-		updatedTr.find('.fuel-kg').val(fuelKg.toFixed(1));
+		$('.fuel-l').each(function(){
+			const tr = $(this).closest('tr');
+			const fuelL = tr.find('.fuel-l').val() * 1.0;
+			const fuelKg = fuelL * updatedField.val();
+			tr.find('.fuel-kg').val(fuelKg.toFixed(1));
+		})
 	}
 	
 	//calcul des moments
 	let momentTotal = 0;
 	let totalMass = 0;
+	let momentTotalDry = 0;
+	let totalMassDry = 0;
 	
 	$('.input-row').each(function(){
 		let tr = $(this);
@@ -66,20 +79,24 @@ function refreshMab(updatedField){
 					tr.find('.mab-max-weight').removeClass('has-text-weight-bold has-text-danger');
 				}
 			}
+			
+			if( ! tr.hasClass('is-fuel')){
+				momentTotalDry += moment;
+				totalMassDry += mass;
+			}
 		}
-		
-		
 	});
 	
 	let armResult = momentTotal/totalMass;
+	let armResultDry = momentTotalDry/totalMassDry;
 	
 	$('.result-row .mab-moment').text(momentTotal.toFixed(1));
 	$('.result-row .mab-weight').text(totalMass.toFixed(1));
 	$('.result-row .mab-arm').text(armResult.toFixed(1));
 	
-	let mtow = $('#mtow').text() * 1.0;
-	let mlw = $('#mlw').text() * 1.0;
-	let mzfw = $('#mzfw').text() * 1.0;
+	let mtow = $('#mtow').val() * 1.0;
+	let mlw = $('#mlw').val() * 1.0;
+	let mzfw = $('#mzfw').val() * 1.0;
 	
 	if(totalMass > mtow){
 		$('.result-row .mab-weight').addClass("has-text-danger")
@@ -87,12 +104,16 @@ function refreshMab(updatedField){
 		$('.result-row .mab-weight').removeClass("has-text-danger")
 	}
 	
+	//CALCULATE LANDING MASS
+	let fuelBurnKg = $('#flight_time').val() * $('#fuel_flow').val() * 1.0 / 60.0 * $('#fuel_density').val();
+	let landingMass = totalMass - fuelBurnKg;
+	
 	let minWeight = 100000000;
 	let maxWeight = -100000000;
 	let minArm = 1000000;
 	let maxArm = -1000000;
 	
-	 $('.mab-line').each(function(){
+	$('.mab-line').each(function(){
 		if($(this).find('.p1-arm').val()*1.0 < minArm)
 			minArm = $(this).find('.p1-arm').val() * 1.0;
 			
@@ -124,9 +145,11 @@ function refreshMab(updatedField){
 	minWeight -= (maxWeight - minWeight )*0.05
 	maxWeight += (maxWeight - minWeight )*0.10  
 	
-	//drawing canevas
+	
+	//drawing canvas
 	let canvas = document.getElementById('mab_canvas');
 	
+	let dx = canvas.offsetWidth;
 	let dy = canvas.offsetHeight;
 	let cx = canvas.offsetWidth / (maxArm - minArm);
 	let cy = canvas.offsetHeight / (maxWeight - minWeight);
@@ -139,6 +162,12 @@ function refreshMab(updatedField){
 
 		ctx.strokeStyle = 'hsl(171, 100%, 41%)'
 		ctx.lineWidth = 2
+		
+		ctx.shadowOffsetX = 0;
+	  ctx.shadowOffsetY = 0;
+	  ctx.shadowBlur = 1;
+	  ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'
+		
 		ctx.beginPath();
     $('.mab-line').each(function(){
 	
@@ -152,14 +181,80 @@ function refreshMab(updatedField){
 		});
 		ctx.stroke();
 		
-		
-		ctx.strokeStyle = 'hsl(348, 100%, 61%)'
-		ctx.fillStyle = 'hsl(348, 100%, 61%)'
 		let x1 = armResult * cx - minArm * cx;
 		let y1 = dy - totalMass * cy + minWeight * cy;
-		ctx.fillRect( x1 -5, y1 -5, 10, 10);
+		let x2 = armResultDry * cx - minArm * cx;
+		let y2 = dy - totalMassDry * cy + minWeight * cy;
 		
+		ctx.shadowBlur = 0;
+		ctx.strokeStyle = 'lightgray'
+		ctx.fillStyle = 'gray'
+		ctx.textBaseline = "bottom";
+		ctx.setLineDash([4, 2]);
+		ctx.lineWidth = 1;
+		
+		ctx.beginPath();
+		ctx.moveTo( x1, 0);
+		ctx.lineTo( x1, dy);
+		ctx.fillText(armResult.toFixed(2)+' m', x1+5, dy-15);
+		ctx.moveTo( 0, y1);
+		ctx.lineTo( dx, y1);
+		ctx.fillText(totalMass.toFixed()+' kg', 5, y1-2);
+		
+		ctx.moveTo( x2, 0);
+		ctx.lineTo( x2, dy);
+		ctx.fillText(armResultDry.toFixed(2)+' m', x2+5, dy-3);
+		ctx.moveTo( 0, y2);
+		ctx.lineTo( dx, y2);
+		ctx.fillText(totalMassDry.toFixed()+' kg', 5, y2-2);
+		ctx.stroke();
+		
+		ctx.shadowBlur = 1;
+		
+		ctx.strokeStyle = 'hsl(217, 71%, 53%)'
+		ctx.fillStyle = 'hsl(217, 71%, 53%)'
+		ctx.textBaseline = "top";
+		ctx.setLineDash([1,0]);
+		ctx.lineWidth = 2;
+		ctx.beginPath();
+		ctx.moveTo( x1, y1);
+		ctx.lineTo( x2, y2);
+		ctx.stroke();
+		ctx.fillRect( x1 -5, y1 -5, 10, 10);
+		ctx.fillRect( x2 -5, y2 -5, 10, 10);
+		
+		ctx.shadowBlur = 0;
+		ctx.fillText('Décollage', x1+10, y1+2);
+		ctx.fillText('Zero fuel', x2+10, y2+2);
 		
   }
+
+	//DISPLAYING LIMITS
+	$('#limit_table tbody').empty();
+	let classColor = ''
+	
+	let tr;
+	
+	tr = $('<tr>');
+	tr.append($('<td>').text('Masse décollage'))
+	if(totalMass > mtow) classColor = 'has-text-danger'; else classColor = 'has-text-success';
+	tr.append($('<td>').text(totalMass.toFixed() + ' kg').addClass('has-text-weight-bold '+classColor))
+	tr.append($('<td>').text(mtow.toFixed() + ' kg'))
+	$('#limit_table tbody').append(tr);
+	
+	
+	tr = $('<tr>');
+	tr.append($('<td>').text('Masse zero fuel'))
+	if(totalMassDry > mzfw) classColor = 'has-text-warning'; else classColor = 'has-text-success';
+	tr.append($('<td>').text(totalMassDry.toFixed() + ' kg').addClass('has-text-weight-bold '+classColor))
+	tr.append($('<td>').text(mzfw.toFixed() + ' kg'))
+	$('#limit_table tbody').append(tr);
+	
+	tr = $('<tr>');
+	tr.append($('<td>').text('Masse atterrissage'))
+	if(landingMass > mlw) classColor = 'has-text-danger'; else classColor = 'has-text-success';
+	tr.append($('<td>').text(landingMass.toFixed() + ' kg').addClass('has-text-weight-bold '+classColor))
+	tr.append($('<td>').text(mlw.toFixed() + ' kg'))
+	$('#limit_table tbody').append(tr);
 
 }

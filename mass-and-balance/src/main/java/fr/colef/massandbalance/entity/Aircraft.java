@@ -36,6 +36,8 @@ public class Aircraft {
 
 	private Float						defaultFuelDensity;
 
+	private Float						fuelFlow;
+
 	private String						imageUrl;
 
 	@OneToMany( fetch = FetchType.LAZY, cascade = CascadeType.ALL )
