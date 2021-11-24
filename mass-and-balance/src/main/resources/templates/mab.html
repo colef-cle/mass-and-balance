@@ -53,6 +53,9 @@
 		<div class="container is-fullhd box">
 			
 			<p class="title has-text-centered mt-3 mb-5">
+				<a class="button no-print mr-6 is-primary is-outlined" title="Back to homepage" th:href="@{/home}">
+					<i class="fas fa-chevron-left"></i>
+				</a>
 				DEVIS MASSE ET CENTRAGE
 				<a class="button no-print ml-6 is-primary is-outlined" id="print_btn" title="Print">
 					<i class="fas fa-print"></i>
@@ -63,14 +66,15 @@
 			</p>
 			
 			<div class="columns is-vcentered">
-				<div class="column has-text-centered">
-					<img th:if="${act.imageUrl}" th:src="${act.imageUrl}"
-										alt="image" width="200px">
-					<div th:unless="${act.imageUrl}" width="200px"></div>			
-				</div>
 				<div class="column ">
 						<p class="title is-1 my-5 has-text-centered" th:text="${act.registrationMark}"/>
 				</div>
+				<div class="column has-text-centered">
+					<img th:if="${act.imageUrl}" th:src="${act.imageUrl}"
+										alt="image" width="200px" class="no-print">
+					<div th:unless="${act.imageUrl}" width="200px"></div>			
+				</div>
+				
 			</div>
 			
 			<div class="is-flex is-flex-wrap-wrap is-justify-content-space-between" style="row-gap: 2rem;">
@@ -105,21 +109,21 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="ws : ${act.weightStations}" class="input-row" th:classappend="${ws.isFuel} ? 'is-fuel'">
-								<td th:text="${ws.name}"/>
-								<td th:text="${ws.arm}" class="mab-arm"/>
-								<td class="mab-moment has-text-grey-light"/>
-								<td th:text="${ws.maxWeight}" class="mab-max-weight"/>
-								<td>
+							<tr th:each="ws : ${act.weightStations}" class="input-row" th:classappend="${ws.isFuel} ? 'is-fuel'" >
+								<td th:text="${ws.name}" style="vertical-align: middle;"/>
+								<td th:text="${ws.arm}" class="mab-arm" style="vertical-align: middle;"/>
+								<td class="mab-moment has-text-grey-light" style="vertical-align: middle;"/>
+								<td th:text="${ws.maxWeight}" class="mab-max-weight" style="vertical-align: middle;"/>
+								<td style="vertical-align: middle;">
 									<input type="number" class="input is-small mab-weight mab-field" 
 											th:readOnly="! ${ws.isEditable}" th:value="${ws.defaultWeight}"
 											th:classappend="|${ws.isFuel != null && ws.isFuel ? 'fuel-kg':''} 
 																			${ws.isEditable != null && ws.isEditable ? 'is-primary':''}|">
 								</td>
-								<td>
+								<td style="vertical-align: middle;">
 									<input th:if="${ws.isFuel}" type="number" class="input is-small fuel-l mab-field is-primary">
 								</td>
-								<td>
+								<td style="vertical-align: middle;">
 									<input th:if="${ws.isFuel}" type="number" class="input is-small fuel-usg mab-field is-primary">
 								</td>
 								
@@ -154,6 +158,7 @@
 						<input id="mlw" type="hidden"  th:value="${act.maximumLandingWeight}">
 						<input id="mzfw" type="hidden" th:value="${act.maximumZeroFuelWeight}">
 						<input id="fuel_flow" type="hidden" th:value="${act.fuelFlow}">
+						<input id="max_fuel" type="hidden" th:value="${act.maxFuel}">
 						
 						
 						<canvas id="mab_canvas" style="border: solid 2px lightgray ;width: 350px;height: 200px;"></canvas>

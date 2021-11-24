@@ -43,6 +43,18 @@ $(document).ready(function(){
 		$('#act_fuel_flow_usg').val( ($('#act_fuel_flow').val() / 3.78541).toFixed(1) )
 	})
 	
+	if($('#act_max_fuel').val()){
+		$('#act_max_fuel_usg').val( ($('#act_max_fuel').val() / 3.78541).toFixed(1) )
+	}
+	
+	$('#act_max_fuel_usg').on('input', function(){
+		$('#act_max_fuel').val( ($('#act_max_fuel_usg').val() * 3.78541).toFixed(1) )
+	})
+	
+	$('#act_max_fuel').on('input', function(){
+		$('#act_max_fuel_usg').val( ($('#act_max_fuel').val() / 3.78541).toFixed(1) )
+	})
+	
 });
 
 function addAircraft(){
@@ -216,7 +228,7 @@ function updateAircraft(){
 	const act = {};
 	act['id'] = $('#aircraft_container').data('actId');
 	act['registrationMark'] = $('#act_registration_mark').val()
-	act['emptyWeight'] = $('#act_empty_weight').val()
+	act['maxFuel'] = $('#act_max_fuel').val()
 	act['maximumTakeOffWeight'] = $('#act_maximum_take_off_weight').val()
 	act['maximumLandingWeight'] = $('#act_maximum_landing_weight').val()
 	act['maximumZeroFuelWeight'] = $('#act_maximum_zero_fuel_weight').val()

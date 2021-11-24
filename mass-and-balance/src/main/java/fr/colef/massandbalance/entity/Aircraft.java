@@ -26,7 +26,7 @@ public class Aircraft {
 
 	private String						registrationMark;
 
-	private Float						emptyWeight;
+	private Float						maxFuel;
 
 	private Float						maximumTakeOffWeight;
 

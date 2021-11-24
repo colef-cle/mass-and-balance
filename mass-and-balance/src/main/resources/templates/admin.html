@@ -71,13 +71,19 @@
 							</div>
 							<div class="field is-horizontal">
 							  <div class="field-label is-normal is-flex-grow-3">
-							    <label class="label">Empty weight - kg : </label>
+							    <label class="label">Max fuel - l : </label>
 							  </div>
 							  <div class="field-body">
 							    <div class="field is-narrow">
 							      <div class="control">
-							        <input class="input act-field" type="text" id="act_empty_weight"
-							        				th:value="${aircraft.emptyWeight}"/>
+							        <input class="input act-field" type="text" id="act_max_fuel"
+							        				th:value="${aircraft.maxFuel}"/>
+							      </div>
+							    </div>
+							    <div class="field is-narrow">
+							    	<div class="control is-flex is-align-items-baseline">
+							        <input class="input act-field" type="text" id="act_max_fuel_usg"/>
+							         &nbsp;(GPH)
 							      </div>
 							    </div>
 							  </div>
