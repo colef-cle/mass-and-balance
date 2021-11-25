@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" translate="no">
 <head>
-<title>Mass And Balance - ADMIN</title>
+<title>Fuel, Mass And Balance</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -30,8 +30,8 @@
 	<section class="section">
 		<div class="container">
 
-			<div class="columns is-multiline">
-				<div class="column is-narrow" th:each="act : ${aircrafts}">
+			<div class="is-flex is-flex-wrap-wrap is-justify-content-center" style="gap: 1.75rem;">
+				<div class="" th:each="act : ${aircrafts}">
 					<div class="card act-card is-clickable has-text-centered" style="width: 200px" th:data-act-id="${act.id}">
 						<div class="card-image">
 							<figure class="image is-4by3">

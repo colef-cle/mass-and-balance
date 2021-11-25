@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" translate="no">
 <head>
-<title>Mass And Balance - ADMIN</title>
+<title th:text="'Devis '+ ${aircraft?.registrationMark}"></title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -22,24 +22,34 @@
 <script th:src="@{/js/mab.js}"></script>
 
 <style type="text/css">
-@media print
-{    
-  .no-print, .no-print *
-  {
-    display: none !important;
-  }
-}
-@page  
-{ 
-  size: auto;   /* auto is the initial value */ 
-  margin: 0mm 0mm 0mm 0mm;  
-}
+	td
+	{
+		vertical-align: middle !important;
+	}
+	
+	
+	@media print
+	{  
+		body{
+			transform-origin: top center;
+			transform: scale(0.7);
+		}
+	  .no-print, .no-print *
+	  {
+	    display: none !important;
+	  }
+	}
+	@page  
+	{ 
+	  size: auto;   /* auto is the initial value */
+	  orientation: landscape; 
+	  margin: 0mm 0mm 0mm 0mm;  
+	}
 
 </style>
 
 </head>
 <body th:with="act = ${aircraft}">
-
 	<section class="hero is-small is-primary no-print">
 		<div class="hero-body">
 			<p class="title is-clickable"
@@ -52,163 +62,325 @@
 	<section class="section p-5" id="main_section">
 		<div class="container is-fullhd box">
 			
-			<p class="title has-text-centered mt-3 mb-5">
-				<a class="button no-print mr-6 is-primary is-outlined" title="Back to homepage" th:href="@{/home}">
-					<i class="fas fa-chevron-left"></i>
-				</a>
-				DEVIS MASSE ET CENTRAGE
-				<a class="button no-print ml-6 is-primary is-outlined" id="print_btn" title="Print">
-					<i class="fas fa-print"></i>
-				</a>
-				<a class="button no-print is-primary is-outlined" id="pdf_btn" title="Exporter en pdf">
-					<i class="fas fa-file-pdf"></i>
-				</a>
-			</p>
-			
-			<div class="columns is-vcentered">
-				<div class="column ">
-						<p class="title is-1 my-5 has-text-centered" th:text="${act.registrationMark}"/>
+			<div class="is-flex is-justify-content-space-between mb-2">
+				<div >
+					<a class="button no-print is-primary is-outlined" title="Back to homepage" th:href="@{/home}">
+						<i class="fas fa-chevron-left"></i>
+					</a>
 				</div>
-				<div class="column has-text-centered">
+				<div>
+					<a class="button no-print is-primary is-outlined" id="print_btn" title="Print">
+						<i class="fas fa-print"></i>
+					</a>
+					<a class="button no-print is-primary is-outlined" id="pdf_btn" title="Exporter en pdf">
+						<i class="fas fa-file-pdf"></i>
+					</a>
+				</div>
+			</div>
+			
+			<div class="columns is-vcentered has-text-centered">
+				<div class="column ">
+						<p class="title is-1" th:text="${act.registrationMark}"/>
+				</div>
+				
+				<div class="column">
+					<p class="title">
+						DEVIS CARBURANT, MASSE ET CENTRAGE
+					</p>
+				</div>
+				
+				<div class="column no-print">
 					<img th:if="${act.imageUrl}" th:src="${act.imageUrl}"
-										alt="image" width="200px" class="no-print">
+										alt="image" width="200px">
 					<div th:unless="${act.imageUrl}" width="200px"></div>			
 				</div>
 				
 			</div>
 			
-			<div class="is-flex is-flex-wrap-wrap is-justify-content-space-between" style="row-gap: 2rem;">
 			
-				<div class="table-container">
-					<p class="subtitle mb-2 has-text-centered">
-						<span class="mr-6">TABLEAU DE CENTRAGE</span>
-						
-						<span class="is-size-7 ml-6"> 
-								Densité de carburant utilisée : 
-								<input class="input is-small p-0 fuel-d mab-field is-primary" 
-													type="number" th:value="${act.defaultFuelDensity}" 
-													id="fuel_density" style="width: 3rem;">
-								kg/l					
-						</span>
-					</p>
-					
-					<table class="table is-striped is-narrow" style="margin: auto;">
-						<thead class="has-text-centered">
-							<tr>
-								<th style="width: 0px;min-width: 5rem;" rowspan="2"></th>
-								<th style="width: 0px;min-width: 5rem;" rowspan="2">Levier</th>
-								<th style="width: 0px;min-width: 5rem;" rowspan="2">Moment</th>
-								<th style="width: 0px;min-width: 5rem;" rowspan="2">Masse Max</th>
-								<th style="width: 0px;min-width: 5rem;" rowspan="2">Masse kg</th>
-								<th style="width: 0px;min-width: 5rem;" colspan="2">Carburant</th>
-								
-							</tr>
-							<tr>
-								<th style="width: 0px;min-width: 5rem;">Litres</th>
-								<th style="width: 0px;min-width: 5rem;">USG</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="ws : ${act.weightStations}" class="input-row" th:classappend="${ws.isFuel} ? 'is-fuel'" >
-								<td th:text="${ws.name}" style="vertical-align: middle;"/>
-								<td th:text="${ws.arm}" class="mab-arm" style="vertical-align: middle;"/>
-								<td class="mab-moment has-text-grey-light" style="vertical-align: middle;"/>
-								<td th:text="${ws.maxWeight}" class="mab-max-weight" style="vertical-align: middle;"/>
-								<td style="vertical-align: middle;">
-									<input type="number" class="input is-small mab-weight mab-field" 
-											th:readOnly="! ${ws.isEditable}" th:value="${ws.defaultWeight}"
-											th:classappend="|${ws.isFuel != null && ws.isFuel ? 'fuel-kg':''} 
-																			${ws.isEditable != null && ws.isEditable ? 'is-primary':''}|">
-								</td>
-								<td style="vertical-align: middle;">
-									<input th:if="${ws.isFuel}" type="number" class="input is-small fuel-l mab-field is-primary">
-								</td>
-								<td style="vertical-align: middle;">
-									<input th:if="${ws.isFuel}" type="number" class="input is-small fuel-usg mab-field is-primary">
-								</td>
-								
-							</tr>
-						</tbody>
-						<tfoot>
-							<tr class="result-row has-background-primary-light" >
-								<td class="has-text-weight-bold">RESULT</td>
-								<td class="has-text-weight-bold mab-arm"/>
-								<td class="mab-moment has-text-grey-light"/>
-								<td th:text="${act.maximumTakeOffWeight}"/>
-								<td class="has-text-weight-bold mab-weight"/>
-								<td></td>
-								<td></td>
-							</tr>
-						</tfoot>
-					</table>
+			<div class="is-flex is-flex-wrap-wrap is-justify-content-center is-align-items-baseline mb-2"
+						style="white-space: nowrap;">
+				<p>Densité de carburant utilisée :</p>
+				<input class="input is-small fuel-d mab-field is-primary mx-2" 
+									type="number" th:value="${act.defaultFuelDensity}" 
+									id="fuel_density" style="width: 4rem;">
+				<p> kg/l</p>
+			</div>
+			
+			<div class="is-flex is-flex-wrap-wrap is-justify-content-center is-align-items-baseline mb-4">
+				<p>Consommation horaire utilisée :</p>
+				<div class="is-flex mx-2">
+					<div class="control has-icons-right mr-2">
+					  <input id="fuel_flow"
+					  				class="input is-small py-0 is-primary mab-field pl-1" 
+					  				type="number" th:if="${act.fuelFlow}" 
+					  				th:value="${#numbers.formatDecimal(act.fuelFlow, 0, 0, 'POINT')}"  
+					  				style="width: 5rem;">
+					  <span class="icon is-small is-right">
+					    lph
+					  </span>
+					</div>
+					<div class="control has-icons-right" th:if="${act.fuelFlow}">
+					  <input id="fuel_flow_usg" 
+					  			class="input is-small py-0 is-primary mab-field pl-1" 
+					  			type="number"  
+					  			th:value="${#numbers.formatDecimal(act.fuelFlow / 3.78541, 0, 1, 'POINT')}"  
+					  			style="width: 5rem;">
+					  <span class="icon is-small is-right">
+					    gph
+					  </span>
+					</div>
 				</div>
+			</div>
+									
 			
-				<div class="table-container">
-					<p class="subtitle mb-2 has-text-centered">DIAGRAMME</p>
+			
+			<div class="is-flex is-flex-wrap-wrap is-justify-content-space-around mb-4" style="gap: 1.75rem;">
+			
+					<div class="table-container">
+						<p class="subtitle mb-2 has-text-centered has-text-primary">
+							DEVIS CARBURANT
+						</p>
+						<table class="table is-striped is-narrow is-size-7" style="margin: auto;" id="fuel_devis">
+							<thead class="has-text-centered">
+								<tr>
+									<th style="width: 0px;min-width: 1.2rem;"></th>
+									<th style="width: 0px;min-width: 18rem;">Poste</th>
+									<th style="width: 0px;min-width: 5rem;">Litres</th>
+									<th style="width: 0px;min-width: 4rem;">USG</th>
+									<th style="width: 0px;min-width: 4rem;">Minutes</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td rowspan="3" class="has-text-weight-bold is-size-6">
+										<div style="writing-mode: vertical-lr;transform: rotate(180deg); text-align: center;white-space: nowrap;"
+												class="vert-header">
+												VFR OU IFR
+										</div>
+									</td>
+									<td>Roulage</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								<tr>
+									<td>T/O, montée, croisière, prise en compte du vent, descente, approche</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								<tr>
+									<td>Tout carburant supplémentaire désiré</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								<tr>
+									<td rowspan="4" class="has-text-weight-bold has-text-success is-size-6 has-background-success-light">
+										<div style="writing-mode: vertical-lr;transform: rotate(180deg); text-align: center;white-space: nowrap;" class="vert-header">
+												RESERVES VFR
+										</div>
+									</td>
+									<td>De jour, A vers A et terrain en vue : <strong>10 minutes</strong> (texte NCO.OP.125)</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								<tr>
+									<td>Tout autre vol de jour : <strong>30 minutes</strong> (texte NCO.OP.125)</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								<tr>
+									<td>De nuit : <strong>45 minutes</strong> (texte NCO.OP.125)</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								<tr>
+									<td>De A vers B : Carburant pour un plan d'action de repli (texte NCO.OP.135)</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								<tr>
+									<td rowspan="4" class="has-text-weight-bold has-text-warning is-size-6 has-background-warning-light">
+										<div style="writing-mode: vertical-lr;transform: rotate(180deg); text-align: center;white-space: nowrap;" class="vert-header">
+												RESERVES IFR
+										</div>
+									</td>
+									<td>Terrain de dégagement si nécessaire : carburant pour le rejoindre (texte NCO.OP.125)</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								<tr>
+									<td>Réserve finale : <strong>45 minutes</strong> (texte NCO.OP.125)</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								<tr>
+									<td>Réserve de carbu. pour parer à toute éventualité : 
+											<br/>MTO prévue, routes ATC + retard, toute autre situation de retard ou d'augmentation de carburant (texte NCO.OP.125)</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								<tr>
+									<td>Carburant pour un plan d'action de repli (texte NCO.OP.135)</td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-l is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-usg is-primary"/></td>
+									<td><input type="number" class="input is-small fd-field fd-fuel-min is-primary"/></td>
+								</tr>
+								
+							</tbody>
+							<tfoot>
+								<tr class="has-background-primary-light" >
+									<td class="has-text-weight-bold" colspan="2">FUEL MINIMUM A EMBARQUER : </td>
+									<td id="fd_total_l"></td>
+									<td id="fd_total_usg"></td>
+									<td id="fd_total_min"></td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				
+				
 					
-					<div class="has-text-centered p-4">
-						<div th:each="line : ${act.massAndBalanceLines}" class="is-hidden mab-line">
-							<input type="hidden" class="p1-arm" th:value="${line.p1Arm}">
-							<input type="hidden" class="p1-weight" th:value="${line.p1Weight}">
-							<input type="hidden" class="p2-arm" th:value="${line.p2Arm}">
-							<input type="hidden" class="p2-weight" th:value="${line.p2Weight}">
+			
+					
+					<div class="table-container">
+						<p class="subtitle mb-2 has-text-centered  has-text-primary">
+							TABLEAU DE CENTRAGE
+						</p>
+						<table class="table is-striped is-narrow is-size-7" style="margin: auto;">
+							<thead class="has-text-centered">
+								<tr>
+									<th style="width: 0px;min-width: 5rem;" rowspan="2"></th>
+									<th style="width: 0px;min-width: 4rem;" rowspan="2">Levier</th>
+									<th style="width: 0px;min-width: 5rem;" rowspan="2">Masse kg</th>
+									<th style="width: 0px;min-width: 5rem;" colspan="2">Carburant</th>
+									<th style="width: 0px;min-width: 5rem;" rowspan="2">Masse Max</th>
+									<th style="width: 0px;min-width: 5rem;" rowspan="2">Moment</th>
+								</tr>
+								<tr>
+									<th style="width: 0px;min-width: 5rem;">Litres</th>
+									<th style="width: 0px;min-width: 5rem;">USG</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="ws : ${act.weightStations}" class="input-row" th:classappend="${ws.isFuel} ? 'is-fuel'" >
+									<td th:text="${ws.name}"/>
+									<td th:text="${ws.arm}" class="mab-arm"/>
+									
+									
+									<td>
+										<input type="number" class="input is-small mab-weight mab-field" 
+												th:readOnly="! ${ws.isEditable}" th:value="${ws.defaultWeight}"
+												th:classappend="|${ws.isFuel != null && ws.isFuel ? 'fuel-kg':''} 
+																				${ws.isEditable != null && ws.isEditable ? 'is-primary':''}|">
+									</td>
+									<td>
+										<input th:if="${ws.isFuel}" type="number" class="input is-small fuel-l mab-field is-primary">
+									</td>
+									<td>
+										<input th:if="${ws.isFuel}" type="number" class="input is-small fuel-usg mab-field is-primary">
+									</td>
+									<td th:text="${ws.maxWeight}" class="mab-max-weight"/>
+									<td class="mab-moment has-text-grey-light"/>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr class="result-row has-background-primary-light" >
+									<td class="has-text-weight-bold">RESULT</td>
+									<td class="has-text-weight-bold mab-arm"/>
+									<td class="has-text-weight-bold mab-weight"/>
+									<td></td>
+									<td></td>
+									<td>
+										<p class="is-hidden" th:text="${act.maximumTakeOffWeight}"/>
+									</td>
+									<td class="has-text-grey-light">
+										<p class="mab-moment"/>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				
+				
+					
+				
+				
+			</div>
+				
+				<div class="is-flex is-flex-wrap-wrap is-justify-content-space-around" style="gap: 1.75rem;">
+					<div >
+						<p class="subtitle mb-2 has-text-centered  has-text-primary">DIAGRAMME</p>
+						<div class="has-text-centered p-4">
+							<canvas id="mab_canvas" 
+									style="border: solid 2px lightgray; 
+												width: 100%;
+												height: 200px;"></canvas>
 						</div>
 						
-						<input id="mtow" type="hidden" th:value="${act.maximumTakeOffWeight}">
-						<input id="mlw" type="hidden"  th:value="${act.maximumLandingWeight}">
-						<input id="mzfw" type="hidden" th:value="${act.maximumZeroFuelWeight}">
-						<input id="fuel_flow" type="hidden" th:value="${act.fuelFlow}">
-						<input id="max_fuel" type="hidden" th:value="${act.maxFuel}">
-						
-						
-						<canvas id="mab_canvas" style="border: solid 2px lightgray ;width: 350px;height: 200px;"></canvas>
 					</div>
-					
-				</div>
-			
-				<div class="table-container">
-					<p class="subtitle mb-2 has-text-centered">LIMITATIONS</p>
-					
-					<table class="table is-narrow is-size-7 mb-4" style="margin: auto;">
-						<tr>
-							<td class="px-1"  style="vertical-align: middle;">
-								Temps de vol estimé :
-							</td>
-							<td class="px-1"  style="vertical-align: middle;">
-									<input id="flight_time" class="input is-small py-0 is-primary mab-field" type="number" value="60"  style="width: 4rem;height: 1.5rem;">
-							</td>
-							<td class="px-1"  style="vertical-align: middle;">
-								min
-							</td>
-						</tr>
-						<tr>
-							<td class="px-1" style="vertical-align: middle;">
-								Consommation horaire :
-							</td>
-							<td class="px-1" th:text="${act.fuelFlow} ? ${act.fuelFlow} + ' lph' : ''" style="vertical-align: middle;"/>
-							<td class="px-1" th:text="${act.fuelFlow} ? '( ' + ${#numbers.formatDecimal(act.fuelFlow / 3.78541, 0, 1)} +' gph )' :'' "  
-										style="vertical-align: middle;white-space: nowrap;"/>
-						</tr>
+				
+					<div class="table-container">
+						<p class="subtitle mb-2 has-text-centered  has-text-primary">LIMITATIONS</p>
 						
-					</table>
-					
-					<table class="table is-narrow" style="margin: auto;white-space: nowrap;" id="limit_table">
-						<thead>
+						<table class="table is-narrow is-size-7 mb-4" style="margin: auto;">
 							<tr>
-								<th></th>
-								<th>Valeur</th>
-								<th>Limite</th>
+								<td class="px-1">
+									Temps de vol estimé :
+								</td>
+								<td class="px-1">
+										<input id="flight_time" 
+														class="input is-small py-0 is-primary mab-field" 
+														type="number" value="60"  
+														style="width: 5rem;height: 1.5rem;">
+								</td>
+								<td class="px-1">
+									min
+								</td>
 							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-					
+						</table>
+						
+						
+						
+						<table class="table is-narrow is-size-7" style="margin: auto;white-space: nowrap;" id="limit_table">
+							<thead>
+								<tr>
+									<th></th>
+									<th>Valeur</th>
+									<th>Limite</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+						
+					</div>
 				</div>
+				
 			
-			</div>
+			
 
 		</div>
+		<div th:each="line : ${act.massAndBalanceLines}" class="is-hidden mab-line">
+			<input type="hidden" class="p1-arm" th:value="${line.p1Arm}">
+			<input type="hidden" class="p1-weight" th:value="${line.p1Weight}">
+			<input type="hidden" class="p2-arm" th:value="${line.p2Arm}">
+			<input type="hidden" class="p2-weight" th:value="${line.p2Weight}">
+		</div>
+					
+		<input id="mtow" type="hidden" th:value="${act.maximumTakeOffWeight}">
+		<input id="mlw" type="hidden"  th:value="${act.maximumLandingWeight}">
+		<input id="mzfw" type="hidden" th:value="${act.maximumZeroFuelWeight}">
+		<input id="max_fuel" type="hidden" th:value="${act.maxFuel}">
 	</section>
 
 </body>

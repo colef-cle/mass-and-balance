@@ -2,28 +2,110 @@ $(document).ready(function(){
 	$('.mab-field').on('input', function(){
 		refreshMab($(this))
 	});
+	$('.fd-field').on('input', function(){
+		refreshMab($(this))
+	});
+	
+	$('.fd-field').on('input', function(){
+		refreshFuelDevis($(this))
+	});
+	
 	$('.mab-field').not('.fuel-d').each(function(){
 		if($(this).val()){
 			refreshMab($(this))
 		}
 	});
+		
+	$('#fuel_flow_usg').on('input', function(){
+		$('#fuel_flow').val( ($('#fuel_flow_usg').val() * 3.78541).toFixed(1) )
+		refreshMab($(this))
+		refreshFuelDevis($(this))
+	})
+	
+	$('#fuel_flow').on('input', function(){
+		$('#fuel_flow_usg').val( ($('#fuel_flow').val() / 3.78541).toFixed(1) )
+		refreshMab($(this))
+		refreshFuelDevis($(this))
+	})
+	
 	$('#print_btn').click(function(){
 		window.print();
 	});
+	
 	$('#pdf_btn').click(function(){
-		const element = document.getElementById('main_section');
-		// Choose the element and save the PDF for our user.
-		$('.no-print').not('.hero').hide();
-		html2pdf().set({ html2canvas: { scale: 4 } })
-			.from(element)
-			.save('MasseEtCentrage.pdf')
-			.then(function(){
-				$('.no-print').show();
-			}, function(){
-				$('.no-print').show();
-			});
+		exportPdf();
 	});
 });
+
+function refreshFuelDevis(updatedField){
+	const updatedTr = updatedField.closest('tr');
+	if(updatedField.hasClass('fd-fuel-min')){
+		if(updatedField.val()){
+			const fuelMin = updatedField.val();
+			const fuelL = fuelMin * $('#fuel_flow').val() / 60;
+			const fuelUsg = fuelL / 3.78541;
+			updatedTr.find('.fd-fuel-l').val(fuelL.toFixed(1));
+			updatedTr.find('.fd-fuel-usg').val(fuelUsg.toFixed(1));
+		}else{
+			updatedTr.find('.fd-fuel-l').val('');
+			updatedTr.find('.fd-fuel-usg').val('');
+		}
+		
+	}else if(updatedField.hasClass('fd-fuel-l')){
+		if(updatedField.val()){
+			const fuelL = updatedField.val();
+			const fuelUsg = fuelL / 3.78541;
+			const fuelMin = fuelL * 60 / $('#fuel_flow').val();
+			updatedTr.find('.fd-fuel-usg').val(fuelUsg.toFixed(1));
+			updatedTr.find('.fd-fuel-min').val(fuelMin.toFixed());
+		}else{
+			updatedTr.find('.fd-fuel-min').val('');
+			updatedTr.find('.fd-fuel-usg').val('');
+		}
+	}else if(updatedField.hasClass('fd-fuel-usg')){
+		if(updatedField.val()){
+			const fuelUsg = updatedField.val();
+			const fuelL = fuelUsg * 3.78541;
+			const fuelMin = fuelL * 60 / $('#fuel_flow').val();
+			updatedTr.find('.fd-fuel-l').val(fuelL.toFixed(1));
+			updatedTr.find('.fd-fuel-min').val(fuelMin.toFixed());
+		}else{
+			updatedTr.find('.fd-fuel-l').val('');
+			updatedTr.find('.fd-fuel-min').val('');
+		}
+	}else if(updatedField.is('#fuel_flow') || updatedField.is('#fuel_flow_usg')){
+		$('.fd-fuel-min').each(function(){
+			const tr = $(this).closest('tr');
+			if(tr.find('.fd-fuel-l').val()){
+				const fuelL = tr.find('.fd-fuel-l').val() * 1.0;
+				const fuelMin = fuelL * 60 / $('#fuel_flow').val();
+				tr.find('.fd-fuel-min').val(fuelMin.toFixed());	
+			}
+		})
+	}
+	
+	let totalL = 0;
+	let totalUsg = 0;
+	let totalMin = 0;
+	
+	$('#fuel_devis tbody tr').each(function(){
+		const tr = $(this);
+		if(tr.find('.fd-fuel-min').val()){
+			totalMin += tr.find('.fd-fuel-min').val() * 1.0;
+		}
+		if(tr.find('.fd-fuel-l').val()){
+			totalL += tr.find('.fd-fuel-l').val() * 1.0;
+		}
+		if(tr.find('.fd-fuel-usg').val()){
+			totalUsg += tr.find('.fd-fuel-usg').val() * 1.0;
+		}
+	});
+	
+	$('#fd_total_l').text(totalL.toFixed()+' l');
+	$('#fd_total_usg').text(totalUsg.toFixed(1)+ ' usg');
+	$('#fd_total_min').text(totalMin.toFixed()+' min');
+	
+}
 
 function refreshMab(updatedField){
 	const updatedTr = updatedField.closest('tr');
@@ -175,6 +257,7 @@ function refreshMab(updatedField){
 	if (canvas.getContext) {
     var ctx = canvas.getContext('2d');
 
+		//dessin de l'enveloppe
 		ctx.strokeStyle = 'hsl(171, 100%, 41%)'
 		ctx.lineWidth = 2
 		
@@ -185,7 +268,6 @@ function refreshMab(updatedField){
 		
 		ctx.beginPath();
     $('.mab-line').each(function(){
-	
 			let x1 = $(this).find('.p1-arm').val() * cx - minArm * cx
 			let y1 = dy - $(this).find('.p1-weight').val() * cy + minWeight * cy
 			let x2 = $(this).find('.p2-arm').val()  * cx - minArm * cx
@@ -196,6 +278,8 @@ function refreshMab(updatedField){
 		});
 		ctx.stroke();
 		
+		
+		//dessin ligne de vol
 		let x1 = armResult * cx - minArm * cx;
 		let y1 = dy - totalMass * cy + minWeight * cy;
 		let x2 = armResultDry * cx - minArm * cx;
@@ -204,11 +288,12 @@ function refreshMab(updatedField){
 		let y3 = dy - totalMassLdg * cy + minWeight * cy;
 		
 		
+		//dessin lignes t/o et zero fuel
 		ctx.shadowBlur = 0;
-		ctx.strokeStyle = 'lightgray'
-		ctx.fillStyle = 'gray'
+		ctx.strokeStyle = 'hsla(217, 71%, 53%, 0.7)'
+		ctx.fillStyle = 'hsla(217, 71%, 53%, 0.7)'
 		ctx.textBaseline = "bottom";
-		ctx.setLineDash([4, 2]);
+		ctx.setLineDash([2, 4]);
 		ctx.lineWidth = 1;
 		
 		ctx.beginPath();
@@ -227,19 +312,31 @@ function refreshMab(updatedField){
 		ctx.fillText(totalMassDry.toFixed()+' kg', 5, y2-2);
 		ctx.stroke();
 
+
+		//Dessin landing
 		if($('.input-row.is-fuel').get().length == 1){
-			ctx.strokeStyle = 'hsla(204, 86%, 53%, 0.7)'
-			ctx.fillStyle = 'hsla(204, 86%, 53%, 0.7)'
+			//ctx.strokeStyle = 'hsla(204, 86%, 53%, 0.7)'
+			//ctx.fillStyle = 'hsla(204, 86%, 53%, 0.7)'
+			
+			ctx.strokeStyle = 'hsla(348, 100%, 61%, 0.7)'
+			ctx.fillStyle = 'hsla(348, 100%, 61%, 0.7)'
 			ctx.beginPath();
 			
 			ctx.moveTo( x3, 0);
 			ctx.lineTo( x3, dy);
-			ctx.fillText(armResult.toFixed(2)+' m', x3+5, dy-15);
+			
 			ctx.moveTo( 0, y3);
 			ctx.lineTo( dx, y3);
+			ctx.stroke();
+			
+			//ctx.strokeStyle = 'hsl(204, 86%, 53%)'
+			//ctx.fillStyle = 'hsl(204, 86%, 53%)'
+			ctx.strokeStyle = 'hsl(348, 100%, 61%)'
+			ctx.fillStyle = 'hsl(348, 100%, 61%)'
+			ctx.fillText(armResult.toFixed(2)+' m', x3+5, dy-15);
 			ctx.fillText(totalMassLdg.toFixed()+' kg', 5, y3-2);
 			
-			ctx.stroke();
+			
 		}
 		
 		
@@ -262,8 +359,12 @@ function refreshMab(updatedField){
 		ctx.fillText('Zero fuel', x2+10, y2+2);
 		
 		if($('.input-row.is-fuel').get().length == 1){
-			ctx.strokeStyle = 'hsl(204, 86%, 53%)'
-			ctx.fillStyle = 'hsl(204, 86%, 53%)'
+			
+			//ctx.strokeStyle = 'hsl(204, 86%, 53%)'
+			//ctx.fillStyle = 'hsl(204, 86%, 53%)'
+			ctx.strokeStyle = 'hsl(348, 100%, 61%)'
+			ctx.fillStyle = 'hsl(348, 100%, 61%)'
+			
 			ctx.beginPath();
 			ctx.arc(x3, y3, 5, 0, 2 * Math.PI);
 			ctx.fill();
@@ -317,4 +418,36 @@ function refreshMab(updatedField){
 	tr.append($('<td>').text(maxFuel.toFixed() + ' l'))
 	$('#limit_table tbody').append(tr);
 
+}
+
+
+function exportPdf(){
+	$('.no-print').not('.hero').hide();
+		$('.vert-header').css('transform', 'rotate(180deg)');
+		$('.vert-header').css('transform', 'translate(-1.2cm)');
+		let body = document.body
+    let html = document.documentElement
+    let height = Math.max(body.scrollHeight, body.offsetHeight,
+                       html.clientHeight, html.scrollHeight, html.offsetHeight)
+    let element = document.getElementById('main_section');
+    let heightCM = height / 35.35
+      html2pdf(element, {
+        margin: 1,
+        filename: 'CarburantMasseCentrage.pdf',
+        html2canvas: { dpi: 300, letterRendering: true },
+        jsPDF: {
+            orientation: 'portrait',
+            unit: 'cm',
+            format: [heightCM, 60]
+          }
+      }).then(function(){
+				$('.no-print').show();
+				$('.vert-header').css('transform', 'translate(0cm)');
+				$('.vert-header').css('transform', 'rotate(180deg)');
+				
+			}, function(){
+				$('.no-print').show();
+				$('.vert-header').css('transform', 'translate(0cm)');
+				$('.vert-header').css('transform', 'rotate(180deg)');
+			});
 }
