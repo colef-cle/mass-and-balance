@@ -5,6 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+	<!-- FAVICON -->
+	<link rel="shortcut icon" href="/img/favicon.ico" th:href="@{/img/favicon.ico}" type="image/x-icon">
+
 <!-- BULMA -->
 <link rel="stylesheet" th:href="@{/lib/bulma.css}">
 
@@ -32,19 +35,20 @@
 	{  
 		body{
 			transform-origin: top center;
-			transform: scale(0.7);
+			transform: scale(0.65);
 		}
 	  .no-print, .no-print *
 	  {
 	    display: none !important;
 	  }
+	  
+	  @page  
+		{ 
+		  size: auto;   /* auto is the initial value */
+		  margin: 0mm 0mm 0mm 0mm;  
+		}
 	}
-	@page  
-	{ 
-	  size: auto;   /* auto is the initial value */
-	  orientation: landscape; 
-	  margin: 0mm 0mm 0mm 0mm;  
-	}
+	
 
 </style>
 
@@ -144,7 +148,7 @@
 						<table class="table is-striped is-narrow is-size-7" style="margin: auto;" id="fuel_devis">
 							<thead class="has-text-centered">
 								<tr>
-									<th style="width: 0px;min-width: 1.2rem;"></th>
+									<th style="width: 0px;min-width: 2.5rem;"></th>
 									<th style="width: 0px;min-width: 18rem;">Poste</th>
 									<th style="width: 0px;min-width: 5rem;">Litres</th>
 									<th style="width: 0px;min-width: 4rem;">USG</th>
@@ -248,9 +252,6 @@
 						</table>
 					</div>
 				
-				
-					
-			
 					
 					<div class="table-container">
 						<p class="subtitle mb-2 has-text-centered  has-text-primary">
@@ -366,7 +367,10 @@
 					</div>
 				</div>
 				
-			
+			<div class="is-size-7">
+				<p>Déchargement de responsabilité :</p>
+				<p>L'auteur de cette application se décharge de toute responsabilité quant à la qualité des données délivrées ainsi que la présence d'erreurs dans les calculs ou dans l'interprétation des fiches de pesée. Le commandant de bord est le seul responsable de l'exactitude des calculs et de leur conformité vis à vis du manuel de vol et de la dernière fiche de pesée.</p>
+			</div>
 			
 
 		</div>
