@@ -189,7 +189,7 @@ function refreshMab(updatedField){
 	
 	$('.result-row .mab-moment').text(momentTotal.toFixed(1));
 	$('.result-row .mab-weight').text(totalMass.toFixed(1));
-	$('.result-row .mab-arm').text(armResult.toFixed(1));
+	$('.result-row .mab-arm').text(armResult.toFixed(2));
 	
 	let mtow = $('#mtow').val() * 1.0;
 	let mlw = $('#mlw').val() * 1.0;
@@ -333,7 +333,7 @@ function refreshMab(updatedField){
 			//ctx.fillStyle = 'hsl(204, 86%, 53%)'
 			ctx.strokeStyle = 'hsl(348, 100%, 61%)'
 			ctx.fillStyle = 'hsl(348, 100%, 61%)'
-			ctx.fillText(armResult.toFixed(2)+' m', x3+5, dy-15);
+			ctx.fillText(armResultLdg.toFixed(2)+' m', x3+5, dy-15);
 			ctx.fillText(totalMassLdg.toFixed()+' kg', 5, y3-2);
 			
 			
