@@ -246,17 +246,22 @@ function refreshMab(updatedField){
 	//drawing canvas
 	let canvas = document.getElementById('mab_canvas');
 	
+	canvas.height = canvas.offsetHeight-4
+	canvas.width = canvas.offsetWidth-4
+	
+	
+	
+	
 	let dx = canvas.offsetWidth;
 	let dy = canvas.offsetHeight;
 	let cx = canvas.offsetWidth / (maxArm - minArm);
 	let cy = canvas.offsetHeight / (maxWeight - minWeight);
 	
-	canvas.width = canvas.offsetWidth
-	canvas.height = canvas.offsetHeight
-	
 	if (canvas.getContext) {
+		
     var ctx = canvas.getContext('2d');
-
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		
 		//dessin de l'enveloppe
 		ctx.strokeStyle = 'hsl(171, 100%, 41%)'
 		ctx.lineWidth = 2
