@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" translate="no">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	translate="no">
 <head>
 <title>Fuel, Mass And Balance</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<!-- FAVICON -->
-	<link rel="shortcut icon" href="/img/favicon.ico" th:href="@{/img/favicon.ico}" type="image/x-icon">
+<!-- FAVICON -->
+<link rel="shortcut icon" href="/img/favicon.ico" th:href="@{/img/favicon.ico}"
+	type="image/x-icon">
 
 <!-- BULMA -->
 <link rel="stylesheet" th:href="@{/lib/bulma.css}">
@@ -25,33 +27,49 @@
 
 	<section class="hero is-small is-primary">
 		<div class="hero-body">
-			<p class="title is-clickable" onclick="window.location.href = window.location.origin+'/home'">Mass and balance</p>
+			<p class="title is-clickable"
+				onclick="window.location.href = window.location.origin+'/home'">Mass and
+				balance</p>
 			<p class="subtitle">by Colin LEFEBVRE - cle@colef.fr</p>
 		</div>
 	</section>
 
 	<section class="section">
 		<div class="container">
+		
+			<div class="box" th:each="operator : ${operators}">
 
-			<div class="is-flex is-flex-wrap-wrap is-justify-content-center" style="gap: 1.75rem;">
-				<div class="" th:each="act : ${aircrafts}">
-					<div class="card act-card is-clickable has-text-centered" style="width: 200px" th:data-act-id="${act.id}">
-						<div class="card-image">
-							<figure class="image is-4by3">
-								<img th:if="${act.imageUrl}" th:src="${act.imageUrl}"
-									alt="image" style="object-fit: cover;">
-									
-								<img th:unless="${act.imageUrl}" th:src="@{/img/avion.png}"
-									alt="image" style="object-fit: cover;transform: scale(0.8);">	
-									
-							</figure>
+				<p class="title" th:text="${operator.key}"/>
+				
+				<div class="is-flex is-flex-wrap-wrap is-justify-content-center"
+					style="gap: 1.75rem;">
+
+
+					<div th:each="act : ${operator.value}">
+						<div class="card act-card is-clickable has-text-centered"
+							style="width: 200px" th:data-act-id="${act.id}">
+							<div class="card-image">
+								<figure class="image is-4by3">
+									<img th:if="${act.imageUrl}" th:src="${act.imageUrl}" alt="image"
+										style="object-fit: cover;">
+
+									<img th:unless="${act.imageUrl}" th:src="@{/img/avion.png}" alt="image"
+										style="object-fit: cover; transform: scale(0.8);">
+
+								</figure>
+							</div>
+							<div class="card-content">
+								<p class="title" th:text="${act.registrationMark}" />
+							</div>
 						</div>
-						<div class="card-content">
-							<p class="title" th:text="${act.registrationMark}"/>
-						</div>	
-					</div>
 
+					</div>
 				</div>
+
+
+
+
+
 			</div>
 
 			<div></div>

@@ -21,9 +21,19 @@ public class MainController {
 	}
 
 	@GetMapping( "/home" )
-	private String getMainPage( Model model ) {
+	private String getHomePage() {
+		return "redirect:/main";
+	}
 
-		model.addAttribute( "aircrafts", aircraftService.getAllAircrafts() );
+	@GetMapping( "/main" )
+	private String getMainPage( Model model ) {
+		model.addAttribute( "operators", aircraftService.getOperatorsWithAircraftsAsMap() );
+		return "main";
+	}
+
+	@GetMapping( "/{operatorKey}" )
+	private String getOperatorPage( @PathVariable( "operatorKey" ) String operatorKey, Model model ) {
+		model.addAttribute( "operators", aircraftService.getOperatorsWithAircraftsAsMap( operatorKey ) );
 		return "main";
 	}
 

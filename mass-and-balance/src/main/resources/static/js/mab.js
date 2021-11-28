@@ -2,6 +2,7 @@ $(document).ready(function(){
 	$('.mab-field').on('input', function(){
 		refreshMab($(this))
 	});
+	
 	$('.fd-field').on('input', function(){
 		refreshMab($(this))
 	});
@@ -35,6 +36,7 @@ $(document).ready(function(){
 	$('#pdf_btn').click(function(){
 		exportPdf();
 	});
+	
 });
 
 function refreshFuelDevis(updatedField){
@@ -105,6 +107,10 @@ function refreshFuelDevis(updatedField){
 	$('#fd_total_usg').text(totalUsg.toFixed(1)+ ' usg');
 	$('#fd_total_min').text(totalMin.toFixed()+' min');
 	
+	if($('.input-row.is-fuel').get().length == 1){
+		$('.input-row.is-fuel .fuel-l').val(totalL.toFixed()).trigger('input');
+	}
+	
 }
 
 function refreshMab(updatedField){
@@ -148,7 +154,7 @@ function refreshMab(updatedField){
 	let totalMassLdg = 0;
 	let fuelLiters = 0;
 	
-	
+	let fuelArm = 0;
 	$('.input-row').each(function(){
 		let tr = $(this);
 		
@@ -175,7 +181,8 @@ function refreshMab(updatedField){
 				totalMassLdg += mass;
 			}else{
 				fuelLiters += tr.find('.fuel-l').val() * 1.0;
-				let mas = tr.find('.mab-weight').val() * 1.0 - fuelBurnKg;
+				let mas = tr.find('.mab-weight').val() * 1.0;
+				fuelArm = tr.find('.mab-arm').text();
 				let mmt = mas * tr.find('.mab-arm').text();
 				momentTotalLdg += mmt;
 				totalMassLdg += mas;
@@ -185,6 +192,9 @@ function refreshMab(updatedField){
 	
 	let armResult = momentTotal/totalMass;
 	let armResultDry = momentTotalDry/totalMassDry;
+	
+	totalMassLdg -= fuelBurnKg;
+	momentTotalLdg -= fuelBurnKg * fuelArm;
 	let armResultLdg = momentTotalLdg/totalMassLdg;
 	
 	$('.result-row .mab-moment').text(momentTotal.toFixed(1));
@@ -293,6 +303,7 @@ function refreshMab(updatedField){
 		let y3 = dy - totalMassLdg * cy + minWeight * cy;
 		
 		
+		
 		//dessin lignes t/o et zero fuel
 		ctx.shadowBlur = 0;
 		ctx.strokeStyle = 'hsla(217, 71%, 53%, 0.7)'
@@ -317,9 +328,28 @@ function refreshMab(updatedField){
 		ctx.fillText(totalMassDry.toFixed()+' kg', 5, y2-2);
 		ctx.stroke();
 
+		let diffFuelArm = 1;
+		if($('.input-row.is-fuel').get().length > 1){
+			console.log("1")
+			let arm = -1000;
+			$('.input-row.is-fuel').each(function(){
+				console.log("2")
+				if(arm == -1000){
+					console.log("3")
+					arm = $(this).find('.mab-arm').text() * 1.0;
+				}else{
+					console.log("4")
+					if($(this).find('.mab-arm').text() * 1.0 != arm){
+						console.log("5")
+						diffFuelArm = 2;
+						return false;
+					}
+				}
+			});
+		}
 
 		//Dessin landing
-		if($('.input-row.is-fuel').get().length == 1){
+		if(diffFuelArm == 1){
 			//ctx.strokeStyle = 'hsla(204, 86%, 53%, 0.7)'
 			//ctx.fillStyle = 'hsla(204, 86%, 53%, 0.7)'
 			
@@ -341,7 +371,17 @@ function refreshMab(updatedField){
 			ctx.fillText(armResultLdg.toFixed(2)+' m', x3+5, dy-15);
 			ctx.fillText(totalMassLdg.toFixed()+' kg', 5, y3-2);
 			
+		}else if(diffFuelArm > 1){
+			ctx.strokeStyle = 'hsla(348, 100%, 61%, 0.7)'
+			ctx.fillStyle = 'hsla(348, 100%, 61%, 0.7)'
+			ctx.beginPath();
+			ctx.moveTo( 0, y3);
+			ctx.lineTo( dx, y3);
+			ctx.stroke();
 			
+			ctx.strokeStyle = 'hsl(348, 100%, 61%)'
+			ctx.fillStyle = 'hsl(348, 100%, 61%)'
+			ctx.fillText('Atterrissage : '+totalMassLdg.toFixed()+' kg', 5, y3-2);
 		}
 		
 		
@@ -353,6 +393,11 @@ function refreshMab(updatedField){
 		ctx.setLineDash([1,0]);
 		ctx.lineWidth = 2;
 		ctx.beginPath();
+		
+		
+		
+		
+		
 		ctx.moveTo( x1, y1);
 		ctx.lineTo( x2, y2);
 		ctx.stroke();
@@ -363,7 +408,7 @@ function refreshMab(updatedField){
 		ctx.fillText('Décollage', x1+10, y1+2);
 		ctx.fillText('Zero fuel', x2+10, y2+2);
 		
-		if($('.input-row.is-fuel').get().length == 1){
+		if(diffFuelArm == 1){
 			
 			//ctx.strokeStyle = 'hsl(204, 86%, 53%)'
 			//ctx.fillStyle = 'hsl(204, 86%, 53%)'

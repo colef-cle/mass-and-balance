@@ -1,8 +1,11 @@
 package fr.colef.massandbalance.service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +39,13 @@ public class AircraftService {
 		Aircraft act = aircraftRepository.getById( id );
 
 		List<MassAndBalanceLine> mabs = act.getMassAndBalanceLines().stream()
-		                                   .sorted( Comparator.comparingLong( MassAndBalanceLine::getId ) )
-		                                   .collect( Collectors.toList() );
+		        .sorted( Comparator.comparingLong( MassAndBalanceLine::getId ) )
+		        .collect( Collectors.toList() );
 		act.setMassAndBalanceLines( mabs );
 
 		List<WeightStation> wss = act.getWeightStations().stream()
-		                             .sorted( Comparator.comparingLong( WeightStation::getId ) )
-		                             .collect( Collectors.toList() );
+		        .sorted( Comparator.comparingLong( WeightStation::getId ) )
+		        .collect( Collectors.toList() );
 		act.setWeightStations( wss );
 		return act;
 	}
@@ -136,6 +139,35 @@ public class AircraftService {
 			}
 		}
 		aircraftRepository.save( act );
+	}
+
+	public Map<String, List<Aircraft>> getOperatorsWithAircraftsAsMap() {
+		TreeMap<String, List<Aircraft>> map = new TreeMap<>();
+		aircraftRepository.findAll( Sort.by( Sort.Direction.ASC, "registrationMark" ) ).forEach( act -> {
+			if ( act.getOperatorName() != null ) {
+				if ( map.get( act.getOperatorName() ) == null ) {
+					map.put( act.getOperatorName(), new ArrayList<>() );
+				}
+				map.get( act.getOperatorName() ).add( act );
+			}
+		} );
+		return map;
+	}
+
+	public Map<String, List<Aircraft>> getOperatorsWithAircraftsAsMap( String operatorKey ) {
+		TreeMap<String, List<Aircraft>> map = new TreeMap<>();
+		aircraftRepository.findAll( Sort.by( Sort.Direction.ASC, "registrationMark" ) ).stream()
+		        .filter( act -> act.getOperatorName() != null
+		                && act.getOperatorName().toLowerCase().replace( " ", "" ).equalsIgnoreCase( operatorKey ) )
+		        .forEach( act -> {
+			        if ( act.getOperatorName() != null ) {
+				        if ( map.get( act.getOperatorName() ) == null ) {
+					        map.put( act.getOperatorName(), new ArrayList<>() );
+				        }
+				        map.get( act.getOperatorName() ).add( act );
+			        }
+		        } );
+		return map;
 	}
 
 }

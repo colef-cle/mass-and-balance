@@ -40,6 +40,8 @@ public class Aircraft {
 
 	private String						imageUrl;
 
+	private String						operatorName;
+
 	@OneToMany( fetch = FetchType.LAZY, cascade = CascadeType.ALL )
 	@JsonIgnoreProperties( { "hibernateLazyInitializer", "handler" } )
 	private List<MassAndBalanceLine>	massAndBalanceLines;

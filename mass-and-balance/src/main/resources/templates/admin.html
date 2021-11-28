@@ -17,8 +17,7 @@
 	<!-- SCRIPT -->
 	<script th:src="@{/js/admin.js}"></script>
 	
-	
-		<!-- FAVICON -->
+	<!-- FAVICON -->
 	<link rel="shortcut icon" href="/img/favicon.ico" th:href="@{/img/favicon.ico}" type="image/x-icon">
 </head>
 <body>
@@ -57,7 +56,6 @@
       	</div>
       	
       	<div class="column">
-      	
 	      		<div th:data-act-id="${aircraft?.id}" th:if="${aircraft}" id="aircraft_container" class="box">
 		      		<div class="field is-horizontal">
 							  <div class="field-label is-normal is-flex-grow-3">
@@ -68,6 +66,19 @@
 							      <div class="control">
 							        <input class="input act-field" type="text" id="act_registration_mark"
 							        				th:value="${aircraft.registrationMark}"/>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<div class="field is-horizontal">
+							  <div class="field-label is-normal is-flex-grow-3">
+							    <label class="label">Operator name : </label>
+							  </div>
+							  <div class="field-body">
+							    <div class="field is-narrow">
+							      <div class="control">
+							        <input class="input act-field" type="text" id="act_operator_name"
+							        				th:value="${aircraft.operatorName}"/>
 							      </div>
 							    </div>
 							  </div>

@@ -228,6 +228,7 @@ function updateAircraft(){
 	const act = {};
 	act['id'] = $('#aircraft_container').data('actId');
 	act['registrationMark'] = $('#act_registration_mark').val()
+	act['operatorName'] = $('#act_operator_name').val()
 	act['maxFuel'] = $('#act_max_fuel').val()
 	act['maximumTakeOffWeight'] = $('#act_maximum_take_off_weight').val()
 	act['maximumLandingWeight'] = $('#act_maximum_landing_weight').val()
