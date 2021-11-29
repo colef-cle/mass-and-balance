@@ -35,8 +35,9 @@ td {
 @media print {
 	body {
 		transform-origin: top center;
-		transform: scale(0.65);
+		transform: scale(0.7);
 	}
+	
 	.no-print, .no-print * {
 		display: none !important;
 	}
@@ -69,7 +70,7 @@ td {
 					</a>
 				</div>
 				<div>
-					<a class="button no-print is-primary is-outlined" id="print_btn"
+					<a class="button no-print is-primary is-outlined is-hidden" id="print_btn"
 						title="Print">
 						<i class="fas fa-print"></i>
 					</a>
@@ -354,12 +355,12 @@ td {
 
 							</tbody>
 							<tfoot>
-								<tr class="has-background-primary-light">
-									<td class="has-text-weight-bold" colspan="2">FUEL MINIMUM A
+								<tr class="has-background-primary-light has-text-weight-bold ">
+									<td colspan="2" class="py-2">FUEL MINIMUM A
 										EMBARQUER :</td>
-									<td id="fd_total_l"></td>
-									<td id="fd_total_usg"></td>
-									<td id="fd_total_min"></td>
+									<td id="fd_total_l" class="py-2 has-text-centered"></td>
+									<td id="fd_total_usg" class="py-2 has-text-centered"></td>
+									<td id="fd_total_min" class="py-2 has-text-centered"></td>
 								</tr>
 							</tfoot>
 						</table>
@@ -448,7 +449,7 @@ td {
 							</tbody>
 							<tfoot>
 								<tr class="result-row has-background-primary-light">
-									<td class="has-text-weight-bold">RESULT</td>
+									<td class="has-text-weight-bold">TOTAUX</td>
 									<td class="has-text-weight-bold mab-arm" />
 									<td class="has-text-weight-bold mab-weight" />
 									<td></td>

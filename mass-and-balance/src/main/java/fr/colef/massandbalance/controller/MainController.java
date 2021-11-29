@@ -22,10 +22,10 @@ public class MainController {
 
 	@GetMapping( "/home" )
 	private String getHomePage() {
-		return "redirect:/main";
+		return "redirect:/calm";
 	}
 
-	@GetMapping( "/main" )
+	@GetMapping( "/main070319" )
 	private String getMainPage( Model model ) {
 		model.addAttribute( "operators", aircraftService.getOperatorsWithAircraftsAsMap() );
 		return "main";
@@ -45,7 +45,7 @@ public class MainController {
 		return "mab";
 	}
 
-	@GetMapping( "/admin" )
+	@GetMapping( "/admin070319" )
 	private String getAdminPage( @RequestParam( value = "actId", required = false ) Long aircraftId, Model model ) {
 		model.addAttribute( "aircrafts", aircraftService.getAllAircrafts() );
 

@@ -330,17 +330,12 @@ function refreshMab(updatedField){
 
 		let diffFuelArm = 1;
 		if($('.input-row.is-fuel').get().length > 1){
-			console.log("1")
 			let arm = -1000;
 			$('.input-row.is-fuel').each(function(){
-				console.log("2")
 				if(arm == -1000){
-					console.log("3")
 					arm = $(this).find('.mab-arm').text() * 1.0;
 				}else{
-					console.log("4")
 					if($(this).find('.mab-arm').text() * 1.0 != arm){
-						console.log("5")
 						diffFuelArm = 2;
 						return false;
 					}
@@ -467,6 +462,20 @@ function refreshMab(updatedField){
 	tr.append($('<td>').text(fuelLiters.toFixed() + ' l').addClass('has-text-weight-bold '+classColor))
 	tr.append($('<td>').text(maxFuel.toFixed() + ' l'))
 	$('#limit_table tbody').append(tr);
+	
+	const totalFuelMass = totalMass - totalMassDry;
+	const autonomy = Math.round( totalFuelMass / $('#fuel_density').val() / $('#fuel_flow').val() * 60)
+	
+	const automomyH = Math.floor(autonomy/60);
+	const automomyMin = Math.round ((autonomy - automomyH)  % 60);
+	
+	tr = $('<tr>');
+	tr.append($('<td>').text('Autonomie : '))
+	tr.append($('<td>').text(automomyH + ' h '+automomyMin+' min').addClass('has-text-weight-bold'))
+	tr.append($('<td>'));
+	$('#limit_table tbody').append(tr);
+	
+	
 
 }
 

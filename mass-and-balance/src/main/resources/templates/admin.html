@@ -47,7 +47,7 @@
 		      	<aside class="menu">
 						  <ul class="menu-list" id="aircraft_list">
 						    <li th:each="act : ${aircrafts}">
-						    	<a th:text="${act?.registrationMark}" th:href="@{/admin(actId=${act.id})}"
+						    	<a th:text="${act?.registrationMark}" th:href="@{/admin070319(actId=${act.id})}"
 						    		th:classappend="${act.id == aircraft?.id} ? 'is-active'"/>
 						    </li>
 						  </ul>
