@@ -42,6 +42,8 @@ public class Aircraft {
 
 	private String						operatorName;
 
+	private Boolean						ifr	= false;
+
 	@OneToMany( fetch = FetchType.LAZY, cascade = CascadeType.ALL )
 	@JsonIgnoreProperties( { "hibernateLazyInitializer", "handler" } )
 	private List<MassAndBalanceLine>	massAndBalanceLines;

@@ -37,7 +37,6 @@ td {
 		transform-origin: top center;
 		transform: scale(0.7);
 	}
-	
 	.no-print, .no-print * {
 		display: none !important;
 	}
@@ -135,7 +134,7 @@ td {
 			<div class="is-flex is-flex-wrap-wrap is-justify-content-space-around mb-4"
 				style="gap: 1.75rem;">
 
-				<div style="max-width: 100%;" >
+				<div style="max-width: 100%;">
 
 					<div class="table-container">
 						<p class="subtitle mb-2 has-text-centered has-text-primary">DEVIS
@@ -278,86 +277,90 @@ td {
 											class="input is-small fd-field fd-fuel-min is-primary" />
 									</td>
 								</tr>
-								<tr>
-									<td rowspan="4"
-										class="has-text-weight-bold has-text-warning is-size-6 has-background-warning-light">
-										<div
-											style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; white-space: nowrap;"
-											class="vert-header">RESERVES IFR</div>
-									</td>
-									<td>Terrain de dégagement si nécessaire : carburant pour le
-										rejoindre (texte NCO.OP.125)</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-l is-primary" />
-									</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-usg is-primary" />
-									</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-min is-primary" />
-									</td>
-								</tr>
-								<tr>
-									<td>
-										Réserve finale : <strong>45 minutes</strong> (texte NCO.OP.125)
-									</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-l is-primary" />
-									</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-usg is-primary" />
-									</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-min is-primary" />
-									</td>
-								</tr>
-								<tr>
-									<td>
-										Réserve de carbu. pour parer à toute éventualité :
-										<br />
-										MTO prévue, routes ATC + retard, toute autre situation de retard ou
-										d'augmentation de carburant (texte NCO.OP.125)
-									</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-l is-primary" />
-									</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-usg is-primary" />
-									</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-min is-primary" />
-									</td>
-								</tr>
-								<tr>
-									<td>Carburant pour un plan d'action de repli (texte NCO.OP.135)</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-l is-primary" />
-									</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-usg is-primary" />
-									</td>
-									<td>
-										<input type="number"
-											class="input is-small fd-field fd-fuel-min is-primary" />
-									</td>
-								</tr>
+
+								<th:block th:if="${act.ifr}">
+
+									<tr>
+										<td rowspan="4"
+											class="has-text-weight-bold has-text-warning is-size-6 has-background-warning-light">
+											<div
+												style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; white-space: nowrap;"
+												class="vert-header">RESERVES IFR</div>
+										</td>
+										<td>Terrain de dégagement si nécessaire : carburant pour le
+											rejoindre (texte NCO.OP.125)</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-l is-primary" />
+										</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-usg is-primary" />
+										</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-min is-primary" />
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Réserve finale : <strong>45 minutes</strong> (texte NCO.OP.125)
+										</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-l is-primary" />
+										</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-usg is-primary" />
+										</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-min is-primary" />
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Réserve de carbu. pour parer à toute éventualité :
+											<br />
+											MTO prévue, routes ATC + retard, toute autre situation de retard ou
+											d'augmentation de carburant (texte NCO.OP.125)
+										</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-l is-primary" />
+										</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-usg is-primary" />
+										</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-min is-primary" />
+										</td>
+									</tr>
+									<tr>
+										<td>Carburant pour un plan d'action de repli (texte NCO.OP.135)</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-l is-primary" />
+										</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-usg is-primary" />
+										</td>
+										<td>
+											<input type="number"
+												class="input is-small fd-field fd-fuel-min is-primary" />
+										</td>
+									</tr>
+
+								</th:block>
 
 							</tbody>
 							<tfoot>
 								<tr class="has-background-primary-light has-text-weight-bold ">
-									<td colspan="2" class="py-2">FUEL MINIMUM A
-										EMBARQUER :</td>
+									<td colspan="2" class="py-2">FUEL MINIMUM A EMBARQUER :</td>
 									<td id="fd_total_l" class="py-2 has-text-centered"></td>
 									<td id="fd_total_usg" class="py-2 has-text-centered"></td>
 									<td id="fd_total_min" class="py-2 has-text-centered"></td>
@@ -402,8 +405,8 @@ td {
 
 
 				</div>
-				
-				<div  style="max-width: 100%;" >
+
+				<div style="max-width: 100%;">
 					<div class="table-container">
 						<p class="subtitle mb-2 has-text-centered  has-text-primary">TABLEAU
 							DE CENTRAGE</p>
@@ -425,10 +428,9 @@ td {
 							<tbody>
 								<tr th:each="ws : ${act.weightStations}" class="input-row"
 									th:classappend="${ws.isFuel} ? 'is-fuel'">
+									
 									<td th:text="${ws.name}" />
 									<td th:text="${ws.arm}" class="mab-arm" />
-
-
 									<td>
 										<input type="number" class="input is-small mab-weight mab-field"
 											th:readOnly="! ${ws.isEditable}" th:value="${ws.defaultWeight}"
@@ -437,14 +439,17 @@ td {
 									</td>
 									<td>
 										<input th:if="${ws.isFuel}" type="number"
-											class="input is-small fuel-l mab-field is-primary">
+											class="input is-small fuel-l mab-field" th:readOnly="! ${ws.isEditable}"
+											th:classappend="${ws.isEditable != null && ws.isEditable ? 'is-primary':'fuel-unusable'}">
 									</td>
 									<td>
 										<input th:if="${ws.isFuel}" type="number"
-											class="input is-small fuel-usg mab-field is-primary">
+											class="input is-small fuel-usg mab-field" th:readOnly="! ${ws.isEditable}"
+											th:classappend="${ws.isEditable != null && ws.isEditable ? 'is-primary':''}">
 									</td>
 									<td th:text="${ws.maxWeight}" class="mab-max-weight" />
 									<td class="mab-moment has-text-grey-light" />
+									
 								</tr>
 							</tbody>
 							<tfoot>

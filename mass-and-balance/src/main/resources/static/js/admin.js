@@ -236,6 +236,7 @@ function updateAircraft(){
 	act['fuelFlow'] = $('#act_fuel_flow').val()
 	act['defaultFuelDensity'] = $('#act_default_fuel_density').val()
 	act['imageUrl'] = $('#act_image_url').val()
+	act['ifr'] = $('#act_ifr').prop('checked')
 	$.ajax({
 		url: window.location.origin+"/api/aircraft", 
 		method: 'PUT',

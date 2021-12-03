@@ -152,7 +152,8 @@ function refreshMab(updatedField){
 	let totalMassDry = 0;
 	let momentTotalLdg = 0;
 	let totalMassLdg = 0;
-	let fuelLiters = 0;
+	let usableFuelLiters = 0;
+	
 	
 	let fuelArm = 0;
 	$('.input-row').each(function(){
@@ -180,7 +181,9 @@ function refreshMab(updatedField){
 				momentTotalLdg += moment;
 				totalMassLdg += mass;
 			}else{
-				fuelLiters += tr.find('.fuel-l').val() * 1.0;
+				if( ! tr.find('.fuel-l').hasClass('fuel-unusable')){
+					usableFuelLiters += tr.find('.fuel-l').val() * 1.0;
+				}
 				let mas = tr.find('.mab-weight').val() * 1.0;
 				fuelArm = tr.find('.mab-arm').text();
 				let mmt = mas * tr.find('.mab-arm').text();
@@ -451,15 +454,16 @@ function refreshMab(updatedField){
 	
 	tr = $('<tr>');
 	tr.append($('<td>').text('Carburant util. USG'))
-	if(fuelLiters / 3.78541 > maxFuel / 3.78541) classColor = 'has-text-danger'; else classColor = 'has-text-success';
-	tr.append($('<td>').text((fuelLiters / 3.78541).toFixed(1) + ' USG').addClass('has-text-weight-bold '+classColor))
+	
+	if(usableFuelLiters / 3.78541 > maxFuel / 3.78541) classColor = 'has-text-danger'; else classColor = 'has-text-success';
+	tr.append($('<td>').text((usableFuelLiters / 3.78541).toFixed(1) + ' USG').addClass('has-text-weight-bold '+classColor))
 	tr.append($('<td>').text((maxFuel / 3.78541).toFixed(1) + ' USG'))
 	$('#limit_table tbody').append(tr);
 	
 	tr = $('<tr>');
 	tr.append($('<td>').text('Carburant util. L'))
-	if(fuelLiters > maxFuel) classColor = 'has-text-danger'; else classColor = 'has-text-success';
-	tr.append($('<td>').text(fuelLiters.toFixed() + ' l').addClass('has-text-weight-bold '+classColor))
+	if(usableFuelLiters > maxFuel) classColor = 'has-text-danger'; else classColor = 'has-text-success';
+	tr.append($('<td>').text(usableFuelLiters.toFixed() + ' l').addClass('has-text-weight-bold '+classColor))
 	tr.append($('<td>').text(maxFuel.toFixed() + ' l'))
 	$('#limit_table tbody').append(tr);
 	
