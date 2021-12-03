@@ -155,8 +155,13 @@ td {
 								<tr>
 									<td rowspan="3" class="has-text-weight-bold is-size-6">
 										<div
+											th:if="${act.ifr}"
 											style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; white-space: nowrap;"
 											class="vert-header">VFR OU IFR</div>
+										<div
+											th:unless="${act.ifr}"
+											style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; white-space: nowrap;"
+											class="vert-header">VOL</div>
 									</td>
 									<td>Roulage</td>
 									<td>
@@ -206,9 +211,15 @@ td {
 								<tr>
 									<td rowspan="4"
 										class="has-text-weight-bold has-text-success is-size-6 has-background-success-light">
+										
 										<div
+											th:if="${act.ifr}"
 											style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; white-space: nowrap;"
 											class="vert-header">RESERVES VFR</div>
+										<div
+											th:unless="${act.ifr}"
+											style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; white-space: nowrap;"
+											class="vert-header">RESERVES</div>
 									</td>
 									<td>
 										De jour, A vers A et terrain en vue : <strong>10 minutes</strong>
