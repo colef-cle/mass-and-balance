@@ -158,7 +158,8 @@ public class AircraftService {
 		TreeMap<String, List<Aircraft>> map = new TreeMap<>();
 		aircraftRepository.findAll( Sort.by( Sort.Direction.ASC, "registrationMark" ) ).stream()
 		        .filter( act -> act.getOperatorName() != null
-		                && act.getOperatorName().toLowerCase().replace( " ", "" ).equalsIgnoreCase( operatorKey ) )
+		                && act.getOperatorName().toLowerCase().replace( " ", "" ).replace( "ç", "c" )
+		                        .equalsIgnoreCase( operatorKey ) )
 		        .forEach( act -> {
 			        if ( act.getOperatorName() != null ) {
 				        if ( map.get( act.getOperatorName() ) == null ) {

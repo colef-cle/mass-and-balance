@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	translate="no">
+<head>
+<title>Fuel, Mass And Balance</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- FAVICON -->
+<link rel="shortcut icon" href="/img/favicon.ico" th:href="@{/img/favicon.ico}"
+	type="image/x-icon">
+
+<!-- BULMA -->
+<link rel="stylesheet" th:href="@{/lib/bulma.css}">
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.css" />
+
+<!-- JQUERY -->
+<script th:src="@{/lib/jquery-3.6.0.min.js}"></script>
+
+<script th:src="@{/js/main.js}"></script>
+
+</head>
+<body>
+
+	<section class="hero is-small is-primary">
+		<div class="hero-body">
+			<p class="title is-clickable"
+				onclick="window.location.href = window.location.origin+'/home'">Mass and
+				balance</p>
+			<p class="subtitle">by Colin LEFEBVRE - cle@colef.fr</p>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container box">
+
+			<p class="title">Sélectionner votre structure :</p>
+
+			<ul class="pl-6">
+				<li th:each="operator : ${operators}" class="mb-2">
+
+					<a class="subtitle" th:text="${operator.key}" th:href="@{/{key}(key=${operator.key.toLowerCase().replace(' ','').replace('ç','c')})}"/>
+
+				</li>
+			</ul>
+
+		</div>
+	</section>
+
+</body>
+</html>

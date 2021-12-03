@@ -1,5 +1,8 @@
 package fr.colef.massandbalance.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import fr.colef.massandbalance.entity.Aircraft;
 import fr.colef.massandbalance.service.AircraftService;
 
 @Controller
@@ -21,8 +25,9 @@ public class MainController {
 	}
 
 	@GetMapping( "/home" )
-	private String getHomePage() {
-		return "redirect:/calm";
+	private String getHomePage( Model model ) {
+		model.addAttribute( "operators", aircraftService.getOperatorsWithAircraftsAsMap() );
+		return "home";
 	}
 
 	@GetMapping( "/main070319" )
@@ -33,7 +38,11 @@ public class MainController {
 
 	@GetMapping( "/{operatorKey}" )
 	private String getOperatorPage( @PathVariable( "operatorKey" ) String operatorKey, Model model ) {
-		model.addAttribute( "operators", aircraftService.getOperatorsWithAircraftsAsMap( operatorKey ) );
+		Map<String, List<Aircraft>> map = aircraftService.getOperatorsWithAircraftsAsMap( operatorKey );
+		if ( map == null || map.isEmpty() ) {
+			return "redirect:/home";
+		}
+		model.addAttribute( "operators", map );
 		return "main";
 	}
 
