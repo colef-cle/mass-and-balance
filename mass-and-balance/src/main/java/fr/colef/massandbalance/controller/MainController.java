@@ -46,6 +46,15 @@ public class MainController {
 		return "main";
 	}
 
+	@GetMapping( "/operatorofactid/{id}" )
+	private String getOperatorPageWithAircraftId( @PathVariable( "id" ) Long aircraftId ) {
+		if ( aircraftId != null ) {
+			Aircraft act = aircraftService.getAircraftById( aircraftId );
+			return "redirect:/" + act.getOperatorName().toLowerCase().replace( " ", "" ).replace( "ç", "c" );
+		}
+		return "redirect:/home";
+	}
+
 	@GetMapping( "/mab/{id}" )
 	private String getMabPage( @PathVariable( "id" ) Long aircraftId, Model model ) {
 		if ( aircraftId != null ) {

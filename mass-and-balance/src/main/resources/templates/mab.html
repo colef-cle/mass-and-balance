@@ -51,10 +51,11 @@ td {
 <body th:with="act = ${aircraft}">
 	<section class="hero is-small is-primary no-print">
 		<div class="hero-body">
-			<p class="title is-clickable"
-				onclick="window.location.href = window.location.origin+'/home'">Mass and
-				balance</p>
-			<p class="subtitle">by Colin LEFEBVRE - cle@colef.fr</p>
+			<p>
+				<a class="title" th:href="@{/operatorofactid/{id}(id=${act.id})}">Mass and balance</a>
+			</p>
+			<p class="subtitle">by Colin LEFEBVRE - <a href="mailto:cle@colef.fr" target="_blank">cle@colef.fr</a>
+			</p>
 		</div>
 	</section>
 
@@ -64,7 +65,7 @@ td {
 			<div class="is-flex is-justify-content-space-between mb-2">
 				<div>
 					<a class="button no-print is-primary is-outlined" title="Back to homepage"
-						th:href="@{/home}">
+						th:href="@{/operatorofactid/{id}(id=${act.id})}">
 						<i class="fas fa-chevron-left"></i>
 					</a>
 				</div>
@@ -428,7 +429,7 @@ td {
 							<tbody>
 								<tr th:each="ws : ${act.weightStations}" class="input-row"
 									th:classappend="${ws.isFuel} ? 'is-fuel'">
-									
+
 									<td th:text="${ws.name}" />
 									<td th:text="${ws.arm}" class="mab-arm" />
 									<td>
@@ -439,17 +440,19 @@ td {
 									</td>
 									<td>
 										<input th:if="${ws.isFuel}" type="number"
-											class="input is-small fuel-l mab-field" th:readOnly="! ${ws.isEditable}"
+											class="input is-small fuel-l mab-field"
+											th:readOnly="! ${ws.isEditable}"
 											th:classappend="${ws.isEditable != null && ws.isEditable ? 'is-primary':'fuel-unusable'}">
 									</td>
 									<td>
 										<input th:if="${ws.isFuel}" type="number"
-											class="input is-small fuel-usg mab-field" th:readOnly="! ${ws.isEditable}"
+											class="input is-small fuel-usg mab-field"
+											th:readOnly="! ${ws.isEditable}"
 											th:classappend="${ws.isEditable != null && ws.isEditable ? 'is-primary':''}">
 									</td>
 									<td th:text="${ws.maxWeight}" class="mab-max-weight" />
 									<td class="mab-moment has-text-grey-light" />
-									
+
 								</tr>
 							</tbody>
 							<tfoot>
